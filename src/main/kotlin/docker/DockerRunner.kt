@@ -1,7 +1,7 @@
 package docker
 
-import config.WireMockConfig
 import config.OutputConfig
+import config.WireMockConfig
 import java.io.File
 
 // TODO most likely this will go away and the app will run on build and Docker Image only

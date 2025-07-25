@@ -1,5 +1,4 @@
 plugins {
-    application
     kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.serialization") version libs.versions.kotlin
     alias(libs.plugins.shadow.jar)
@@ -24,12 +23,12 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-application {
-    mainClass.set("app.Application")
+tasks.build {
+    dependsOn(tasks.ktlintFormat, tasks.shadowJar)
 }
 
-tasks.build {
-    dependsOn(tasks.ktlintFormat)
+tasks.jar {
+    enabled = false
 }
 
 tasks.test {

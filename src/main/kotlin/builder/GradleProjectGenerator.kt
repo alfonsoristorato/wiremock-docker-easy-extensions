@@ -47,7 +47,11 @@ class GradleProjectGenerator {
                 implementation(libs.wiremock)
                 ${config.dependencies?.joinToString("\n                ") { "implementation(\"$it\")" }}
             }
-
+            
+            tasks.jar {
+                enabled = false
+            }
+            
             tasks.shadowJar {
                 archiveBaseName = "extensions-bundled"
                 archiveClassifier = ""
