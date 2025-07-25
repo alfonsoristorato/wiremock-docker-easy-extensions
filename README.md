@@ -6,12 +6,12 @@
 
 ### Why does this exist?
 
-When using the WireMock Docker image, adding custom extensions requires you to:
-- Package your extension(s) as a JAR.
-- Ensure the JAR is built for Java 11 (since the base WireMock Docker image uses Java 11).
-- Place the JAR in the correct location and configure WireMock to load it.
+When using the WireMock Docker image, adding custom extensions requires:
+- Packaging extension(s) as a JAR.
+- Ensuring the JAR is built for Java 11 (since the base WireMock Docker image uses Java 11).
+- Placing the JAR in the correct location and configuring WireMock to load it.
 
-This project automates and streamlines these steps by dynamically generating a dedicated Gradle project for your extensions, building them against Java 11, and packaging them into a single JAR.
+This project automates and streamlines these steps by dynamically generating a dedicated Gradle project for extensions, building them against Java 11, and packaging them into a single JAR.
 
 ---
 
@@ -19,7 +19,7 @@ This project automates and streamlines these steps by dynamically generating a d
 
 - **Automated JAR packaging** for Java 11 compatibility.
 - **Simple configuration** via a single YAML file.
-- **Handles dependencies** for your extensions.
+- **Handles dependencies** for extensions.
 - **Docker integration** for seamless local development and testing.
 
 ---
@@ -27,11 +27,11 @@ This project automates and streamlines these steps by dynamically generating a d
 ## How it Works
 
 This tool works in a few steps:
-1.  Reads a `config.yaml` file that you provide.
+1.  Reads a `config.yaml` file that is provided.
 2.  Dynamically creates a temporary Gradle project.
-3.  Copies your extension source code into this new project.
-4.  Generates a `build.gradle.kts` file configured to use Java 11 and includes any dependencies you specified.
-5.  Builds this project to produce a single, JAR containing your extensions and their dependencies.
+3.  Copies extension source code into this new project.
+4.  Generates a `build.gradle.kts` file configured to use Java 11 and includes any dependencies specified.
+5.  Builds this project to produce a single, JAR containing extensions and their dependencies.
 
 ---
 
@@ -45,7 +45,7 @@ This tool works in a few steps:
 
 ### Building the Tool
 
-First, you need to build the builder itself.
+The first step is to build the builder itself.
 
 ```sh
 ./gradlew build
@@ -55,7 +55,7 @@ This will create an executable JAR at `build/libs/wiremock-extension-builder.jar
 
 ### Configuration
 
-Next, create a YAML configuration file to define your extensions. See [example config file](examples/wiremock-docker-easy-extensions-config.yaml) for a template.
+Next, a YAML configuration file needs to be created to define the extensions. See [example config file](examples/wiremock-docker-easy-extensions-config.yaml) for a template.
 
 **`config.yaml` structure:**
 
@@ -93,12 +93,12 @@ wiremock:
 
 ### Building Your Extensions
 
-Now, we can build your custom WireMock extensions by running the following command:
+Now, the custom WireMock extensions can be built by running the following command:
 ```sh
 java -jar build/libs/wiremock-extension-builder.jar build <path-to-your-config>.yaml
 ```
 
-If successful, the bundled JAR will be located in the directory specified in your config (e.g., `build/extensions/wiremock-extensions-bundled.jar`).
+If successful, the bundled JAR will be located in the directory specified in the config (e.g., `build/extensions/wiremock-extensions-bundled.jar`).
 
 ### Running WireMock with Extensions - will be removed soon in favour of multi-docker build
 
