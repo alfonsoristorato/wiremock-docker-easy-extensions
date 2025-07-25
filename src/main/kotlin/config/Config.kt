@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    @SerialName("extension-classes") val extensionClasses: List<String>,
+    @SerialName("files-location") val filesLocation: String,
     @SerialName("source-files")  val sourceFiles: List<String>,
     val dependencies: List<String>?,
     @SerialName("use-gradle-wrapper") val useGradleWrapper: Boolean,

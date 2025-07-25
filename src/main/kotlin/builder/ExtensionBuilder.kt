@@ -32,7 +32,7 @@ class ExtensionBuilder(
                 projectRoot.toPath(),
                 tempBuildDir.toPath(),
                 config.sourceFiles,
-                config.extensionClasses
+                config.filesLocation
             )
             if (!runGradleBuild(tempBuildDir, config.useGradleWrapper)) {
                 return@runCatching false
@@ -53,33 +53,40 @@ class ExtensionBuilder(
      *
      * @param projectRoot The root directory of the project.
      * @param buildDir The directory where the build will be performed.
-     * @param sources List of source file paths to copy.
-     * @param extensionClasses List of extension class names to include in the service discovery file.
+     * @param sources List of source files to copy.
+     * @param filesLocation Location of the files. it will be the final package too.
      */
     private fun copySourceFilesAndGenerateServiceDiscoveryFiles(
         projectRoot: Path,
         buildDir: Path,
         sources: List<String>,
-        extensionClasses: List<String>
+        filesLocation: String
     ) {
-        require(sources.size == extensionClasses.size) { "Source files and extension classes must have the same size." }
-        sources.forEach { sourcePath ->
-            projectRoot.resolve(sourcePath).takeIf {
-                Files.exists(it)
-            }?.let {
-                val destination = buildDir.resolve(sourcePath)
-                destination.parent.createDirectories()
-                Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
-            } ?: {
-                println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
-            }
+        val fileNames = mutableListOf<String>()
+        sources.forEach { file ->
+            "$filesLocation/$file"
+                .let { sourcePath ->
+                    projectRoot.resolve(sourcePath)
+                        .takeIf {
+                            Files.exists(it)
+                        }?.let {
+                            val destination = buildDir.resolve(sourcePath)
+                            destination.parent.createDirectories()
+                            Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
+                            fileNames.add(sourcePath)
+                        } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
+
+                }
         }
-        takeIf { extensionClasses.isNotEmpty() }
+
+        takeIf { fileNames.isNotEmpty() }
             ?.let {
-                val servicesDir = buildDir.resolve("config/resources/META-INF/services")
+                val servicesDir = buildDir.resolve("$filesLocation/resources/META-INF/services")
                 servicesDir.createDirectories()
                 val serviceLoaderFile = servicesDir.resolve("com.github.tomakehurst.wiremock.extension.Extension")
-                val serviceLoaderContent = extensionClasses.joinToString("\n")
+                val serviceLoaderContent = fileNames.joinToString("\n") { fileName ->
+                    fileName.substringBeforeLast('.').replace('/', '.')
+                }
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
                 println("✅ Created Service Loader for wiremock to discover extensions.")
             }

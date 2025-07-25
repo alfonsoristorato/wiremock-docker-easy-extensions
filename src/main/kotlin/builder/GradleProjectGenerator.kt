@@ -15,19 +15,19 @@ class GradleProjectGenerator {
             import org.jetbrains.kotlin.gradle.dsl.JvmTarget
             plugins {
                 java
-                kotlin("jvm") version "2.1.20"
-                id("com.github.johnrengelman.shadow") version "8.1.1"
+                kotlin("jvm") version "2.2.0"
+                id("com.gradleup.shadow") version "9.0.0-rc1"
             }
             sourceSets {
                 main {
                     java {
-                        srcDirs("src/main/java", "src/main/kotlin","config/example")
+                        srcDirs("${config.filesLocation}")
                     }
                     kotlin {
-                        srcDirs("src/main", "config/example")
+                        srcDirs("${config.filesLocation}")
                     }
                     resources {
-                        srcDirs("config/resources")
+                        srcDirs("${config.filesLocation}/resources")
                     }
                 }
             }
@@ -42,9 +42,9 @@ class GradleProjectGenerator {
             }
 
             tasks.shadowJar {
-                archiveBaseName.set("extensions-bundled")
-                archiveClassifier.set("")
-                archiveVersion.set("")
+                archiveBaseName = "extensions-bundled"
+                archiveClassifier = ""
+                archiveVersion = ""
                 mergeServiceFiles()
             }
         """.trimIndent()

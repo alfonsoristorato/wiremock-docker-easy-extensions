@@ -1,0 +1,17 @@
+files-location: examples/example
+
+source-files:
+#  - MyResponseTransformerExtensionJava.Java
+  - MyResponseTransformerExtensionKotlin.kt
+
+dependencies:
+
+use-gradle-wrapper: true
+
+output:
+  dir: "build/extensions"
+  jar-name: "wiremock-extensions-bundled.jar"
+
+docker:
+  mappings-dir: ./examples/mappings
+  files-dir: ./examples/__files

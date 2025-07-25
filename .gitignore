@@ -18,3 +18,4 @@ build/
 
 ### Local dev ###
 /local-dev
+.extensions-builder
