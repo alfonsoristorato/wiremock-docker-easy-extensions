@@ -1,8 +1,7 @@
 files-location: examples/example
 
 source-files:
-#  TODO Fix Java to work
-#  - MyResponseTransformerExtensionJava.Java
+  - MyResponseTransformerExtensionJava.java
   - MyResponseTransformerExtensionKotlin.kt
 
 dependencies:

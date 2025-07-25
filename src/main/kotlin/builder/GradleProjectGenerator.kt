@@ -37,7 +37,7 @@ class GradleProjectGenerator {
             repositories { mavenCentral() }
 
             dependencies {
-                implementation("org.wiremock:wiremock-standalone:3.7.0")
+                implementation("org.wiremock:wiremock-standalone:3.13.1")
                 ${config.dependencies?.joinToString("\n                ") { "implementation(\"$it\")" }}
             }
 
