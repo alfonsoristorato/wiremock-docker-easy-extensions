@@ -67,6 +67,7 @@ files/location: examples/example
 source-files:
   - ResponseTransformerExtensionNoDependenciesJava.java
   - ResponseTransformerExtensionNoDependenciesKotlin.kt
+  - ResponseTransformerExtensionWithDependenciesKotlin.kt
   
 # (Required - can be empty) A list of dependencies required to run your classes, they will be packaged in the final JAR.
 dependencies:
@@ -92,13 +93,6 @@ wiremock:
 
 ### Building Your Extensions
 
-With the configuration file ready, we can now build our custom extension JAR.
-First we will build the builder project itself.
-
-```sh
-./gradlew build 
-```
-This will create the executable JAR at `build/libs/wiremock-extension-builder.jar`.
 Now, we can build your custom WireMock extensions by running the following command:
 ```sh
 java -jar build/libs/wiremock-extension-builder.jar build <path-to-your-config>.yaml
