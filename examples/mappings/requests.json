@@ -29,6 +29,21 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/ResponseTransformerExtensionWithDependenciesKotlin"
+      },
+      "response": {
+        "status": 200,
+        "transformers": [
+          "ResponseTransformerExtensionWithDependenciesKotlin"
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }

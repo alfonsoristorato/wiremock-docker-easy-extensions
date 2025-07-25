@@ -3,3 +3,6 @@ GET http://localhost:8080/ResponseTransformerExtensionNoDependenciesJava
 
 ### GET request to ResponseTransformerExtensionNoDependenciesKotlin
 GET http://localhost:8080/ResponseTransformerExtensionNoDependenciesKotlin
+
+### GET request to ResponseTransformerExtensionWithDependenciesKotlin
+GET http://localhost:8080/ResponseTransformerExtensionWithDependenciesKotlin
