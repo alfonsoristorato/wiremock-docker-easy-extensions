@@ -1,0 +1,18 @@
+# Keep alphabetical and formatted correctly please
+[versions]
+gradle-ktlint                   = "13.0.0"
+kaml                            = "0.57.0"
+kotlin                          = "2.2.0"
+kotlinx-serialization-json      = "1.9.0"
+shadow-jar                      = "9.0.0-rc1"
+
+[libraries]
+kaml                            = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+kotlin-stdlib                   = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlinx-serialization-json      = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
+[bundles]
+
+[plugins]
+gradle-ktlint                   = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "gradle-ktlint" }
+shadow-jar                      = { id = "com.gradleup.shadow", version.ref = "shadow-jar" }

@@ -1,8 +1,9 @@
 plugins {
     application
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
-    id("com.gradleup.shadow") version "9.0.0-rc1"
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("plugin.serialization") version libs.versions.kotlin
+    alias(libs.plugins.shadow.jar)
+    alias(libs.plugins.gradle.ktlint)
 }
 
 group = "alfonsoristorato"
@@ -13,11 +14,11 @@ repositories {
 
 dependencies {
     // Core dependencies
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation(libs.kotlin.stdlib)
 
     // YAML parsing
-    implementation("com.charleskorn.kaml:kaml:0.57.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation(libs.kaml)
+    implementation(libs.kotlinx.serialization.json)
 
     // Testing
     testImplementation(kotlin("test"))
