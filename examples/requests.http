@@ -1,0 +1,5 @@
+### GET request to ResponseTransformerExtensionNoDependenciesJava
+GET http://localhost:8080/ResponseTransformerExtensionNoDependenciesJava
+
+### GET request to ResponseTransformerExtensionNoDependenciesKotlin
+GET http://localhost:8080/ResponseTransformerExtensionNoDependenciesKotlin

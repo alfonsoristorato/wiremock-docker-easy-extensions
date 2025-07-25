@@ -1,8 +1,8 @@
 files-location: examples/example
 
 source-files:
-  - MyResponseTransformerExtensionJava.java
-  - MyResponseTransformerExtensionKotlin.kt
+  - ResponseTransformerExtensionNoDependenciesJava.java
+  - ResponseTransformerExtensionNoDependenciesKotlin.kt
 
 dependencies:
 

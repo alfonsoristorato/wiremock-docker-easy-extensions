@@ -3,12 +3,12 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/MyResponseTransformerExtensionKotlin"
+        "urlPath": "/ResponseTransformerExtensionNoDependenciesKotlin"
       },
       "response": {
         "status": 200,
         "transformers": [
-          "MyResponseTransformerExtensionKotlin"
+          "ResponseTransformerExtensionNoDependenciesKotlin"
         ],
         "headers": {
           "Content-Type": "application/json"
@@ -18,12 +18,12 @@
     {
       "request": {
         "method": "GET",
-        "urlPath": "/MyResponseTransformerExtensionJava"
+        "urlPath": "/ResponseTransformerExtensionNoDependenciesJava"
       },
       "response": {
         "status": 200,
         "transformers": [
-          "MyResponseTransformerExtensionJava"
+          "ResponseTransformerExtensionNoDependenciesJava"
         ],
         "headers": {
           "Content-Type": "application/json"
