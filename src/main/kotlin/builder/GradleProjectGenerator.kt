@@ -3,15 +3,18 @@ package builder
 import config.Config
 import java.io.File
 
-
 class GradleProjectGenerator {
     /**
      * Generates a temporary Gradle project for compiling a JAR.
      */
-    fun generate(buildDir: File, config: Config) {
+    fun generate(
+        buildDir: File,
+        config: Config,
+    ) {
         buildDir.resolve("settings.gradle.kts").writeText("rootProject.name = \"wiremock-temp-build\"")
 
-        val buildFileContent = """
+        val buildFileContent =
+            """
             import org.jetbrains.kotlin.gradle.dsl.JvmTarget
             plugins {
                 java
@@ -47,7 +50,7 @@ class GradleProjectGenerator {
                 archiveVersion = ""
                 mergeServiceFiles()
             }
-        """.trimIndent()
+            """.trimIndent()
 
         buildDir.resolve("build.gradle.kts").writeText(buildFileContent)
     }

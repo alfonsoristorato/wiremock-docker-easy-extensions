@@ -43,7 +43,7 @@ class Application {
                     dockerRunner.runWiremockContainer(
                         config.docker,
                         config.output,
-                        projectRoot
+                        projectRoot,
                     )
                 } else {
                     exitProcess(1)
@@ -58,7 +58,8 @@ class Application {
     }
 
     private fun printUsage() {
-        println("""
+        println(
+            """
             
             WireMock Extension Builder
 
@@ -69,7 +70,8 @@ class Application {
               build <config-file>  - Build extensions JAR.
               run <config-file>    - Build extensions JAR and run WireMock Docker container.
               help                 - Show this help message.
-        """.trimIndent())
+            """.trimIndent(),
+        )
     }
 
     companion object {

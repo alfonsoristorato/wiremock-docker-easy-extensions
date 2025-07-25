@@ -28,6 +28,10 @@ application {
     mainClass.set("app.Application")
 }
 
+tasks.build {
+    dependsOn(tasks.ktlintFormat)
+}
+
 tasks.test {
     useJUnitPlatform()
 }

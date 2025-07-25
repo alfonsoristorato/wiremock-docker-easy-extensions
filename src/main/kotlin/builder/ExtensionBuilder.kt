@@ -8,9 +8,8 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.createDirectories
 
-
 class ExtensionBuilder(
-    private val gradleGenerator: GradleProjectGenerator = GradleProjectGenerator()
+    private val gradleGenerator: GradleProjectGenerator = GradleProjectGenerator(),
 ) {
     /**
      * Builds JAR containing the extension classes, their Service Loader and dependencies according to the provided configuration.
@@ -32,7 +31,7 @@ class ExtensionBuilder(
                 projectRoot.toPath(),
                 tempBuildDir.toPath(),
                 config.sourceFiles,
-                config.filesLocation
+                config.filesLocation,
             )
             if (!runGradleBuild(tempBuildDir, config.useGradleWrapper)) {
                 return@runCatching false
@@ -60,13 +59,14 @@ class ExtensionBuilder(
         projectRoot: Path,
         buildDir: Path,
         sources: List<String>,
-        filesLocation: String
+        filesLocation: String,
     ) {
         val fileNames = mutableListOf<String>()
         sources.forEach { file ->
             "$filesLocation/$file"
                 .let { sourcePath ->
-                    projectRoot.resolve(sourcePath)
+                    projectRoot
+                        .resolve(sourcePath)
                         .takeIf {
                             Files.exists(it)
                         }?.let {
@@ -75,7 +75,6 @@ class ExtensionBuilder(
                             Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
                             fileNames.add(sourcePath)
                         } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
-
                 }
         }
 
@@ -84,9 +83,10 @@ class ExtensionBuilder(
                 val servicesDir = buildDir.resolve("$filesLocation/resources/META-INF/services")
                 servicesDir.createDirectories()
                 val serviceLoaderFile = servicesDir.resolve("com.github.tomakehurst.wiremock.extension.Extension")
-                val serviceLoaderContent = fileNames.joinToString("\n") { fileName ->
-                    fileName.substringBeforeLast('.').replace('/', '.')
-                }
+                val serviceLoaderContent =
+                    fileNames.joinToString("\n") { fileName ->
+                        fileName.substringBeforeLast('.').replace('/', '.')
+                    }
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
                 println("✅ Created Service Loader for wiremock to discover extensions.")
             }
@@ -100,22 +100,25 @@ class ExtensionBuilder(
      * @param useGradleWrapper Whether to use the Gradle wrapper or the system Gradle installation.
      * @return true if the build was successful, false otherwise
      */
-    private fun runGradleBuild(buildDir: File, useGradleWrapper: Boolean): Boolean {
+    private fun runGradleBuild(
+        buildDir: File,
+        useGradleWrapper: Boolean,
+    ): Boolean {
         println("⚙️ Compiling extensions and building JAR...")
 
-        val gradleCommand = when (useGradleWrapper) {
-            true -> {
-                copyGradleWrapper(File(".").canonicalFile, buildDir)
-                //TODO test this on Windows and Linux :)
-                if (System.getProperty("os.name").lowercase().contains("windows")) {
-                    "gradlew.bat"
-                } else {
-                    "./gradlew"
+        val gradleCommand =
+            when (useGradleWrapper) {
+                true -> {
+                    copyGradleWrapper(File(".").canonicalFile, buildDir)
+                    // TODO test this on Windows and Linux :)
+                    if (System.getProperty("os.name").lowercase().contains("windows")) {
+                        "gradlew.bat"
+                    } else {
+                        "./gradlew"
+                    }
                 }
+                false -> "gradle"
             }
-            false -> "gradle"
-        }
-
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
             .directory(buildDir)
@@ -131,7 +134,11 @@ class ExtensionBuilder(
      * @param projectRoot The root directory of the project.
      * @param outputConfig The output configuration specifying the target directory and JAR name.
      */
-    private fun moveFinalJar(buildDir: Path, projectRoot: Path, outputConfig: OutputConfig) {
+    private fun moveFinalJar(
+        buildDir: Path,
+        projectRoot: Path,
+        outputConfig: OutputConfig,
+    ) {
         val sourceJar = buildDir.resolve("build/libs/extensions-bundled.jar")
         val targetDir = projectRoot.resolve(outputConfig.dir)
         targetDir.createDirectories()
@@ -139,16 +146,20 @@ class ExtensionBuilder(
         Files.move(sourceJar, targetJar, StandardCopyOption.REPLACE_EXISTING)
     }
 
-    private fun copyGradleWrapper(projectRoot: File, buildDir: File) {
+    private fun copyGradleWrapper(
+        projectRoot: File,
+        buildDir: File,
+    ) {
         val gradleWrapperDir = buildDir.resolve("gradle/wrapper")
         gradleWrapperDir.mkdirs()
 
-        val wrapperFiles = listOf(
-            "gradle/wrapper/gradle-wrapper.jar",
-            "gradle/wrapper/gradle-wrapper.properties",
-            "gradlew",
-            "gradlew.bat"
-        )
+        val wrapperFiles =
+            listOf(
+                "gradle/wrapper/gradle-wrapper.jar",
+                "gradle/wrapper/gradle-wrapper.properties",
+                "gradlew",
+                "gradlew.bat",
+            )
 
         wrapperFiles.forEach { path ->
             val sourceFile = projectRoot.resolve(path)
@@ -157,7 +168,7 @@ class ExtensionBuilder(
                 targetFile.parentFile.mkdirs()
                 sourceFile.copyTo(targetFile, overwrite = true)
 
-                //TODO See if this works on Linux and a Mac that doesn't restrict usage of gradleW
+                // TODO See if this works on Linux and a Mac that doesn't restrict usage of gradleW
                 if (path == "gradlew" && !System.getProperty("os.name").lowercase().contains("windows")) {
                     targetFile.setExecutable(true)
                 }
