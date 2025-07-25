@@ -1,6 +1,6 @@
 package docker
 
-import config.DockerConfig
+import config.WireMockConfig
 import config.OutputConfig
 import java.io.File
 
@@ -10,7 +10,7 @@ class DockerRunner {
      * Runs a WireMock container with the generated extensions.
      */
     fun runWiremockContainer(
-        docker: DockerConfig,
+        docker: WireMockConfig,
         output: OutputConfig,
         projectRoot: File,
     ) {

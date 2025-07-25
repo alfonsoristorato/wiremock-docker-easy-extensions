@@ -41,7 +41,7 @@ class Application {
                 if (success) {
                     val projectRoot = File(".").canonicalFile
                     dockerRunner.runWiremockContainer(
-                        config.docker,
+                        config.wiremockConfig,
                         config.output,
                         projectRoot,
                     )

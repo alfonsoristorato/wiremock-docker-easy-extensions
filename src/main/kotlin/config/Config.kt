@@ -10,11 +10,18 @@ data class Config(
     val dependencies: List<String>?,
     @SerialName("use-gradle-wrapper") val useGradleWrapper: Boolean,
     val output: OutputConfig,
-    val docker: DockerConfig,
+    @SerialName("wiremock") val wiremockConfig: WireMockConfig,
 )
 
 @Serializable
 data class OutputConfig(
     val dir: String,
     @SerialName("jar-name") val jarName: String,
+)
+
+@Serializable
+data class WireMockConfig(
+    @SerialName("mappings-dir")val mappingsDir: String,
+    // TODO make this optional
+    @SerialName("files-dir")val filesDir: String,
 )
