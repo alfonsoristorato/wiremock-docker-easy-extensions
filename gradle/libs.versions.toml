@@ -1,15 +1,22 @@
 # Keep alphabetical and formatted correctly please
 [versions]
+#Main project
 gradle-ktlint                   = "13.0.0"
 kaml                            = "0.57.0"
 kotlin                          = "2.2.0"
 kotlinx-serialization-json      = "1.9.0"
 shadow-jar                      = "9.0.0-rc1"
 
+# Gradle generator
+wiremock                        = "3.13.1"
+
 [libraries]
+#Main project
 kaml                            = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 kotlin-stdlib                   = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
 kotlinx-serialization-json      = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+# Gradle generator
+wiremock                        = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
 
 [bundles]
 

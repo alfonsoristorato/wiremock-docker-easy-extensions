@@ -10,16 +10,20 @@ class GradleProjectGenerator {
     fun generate(
         buildDir: File,
         config: Config,
+        libsVersionsToml: File,
     ) {
-        buildDir.resolve("settings.gradle.kts").writeText("rootProject.name = \"wiremock-temp-build\"")
+        val gradleDir = buildDir.resolve("gradle")
+        gradleDir.mkdirs()
+        libsVersionsToml.copyTo(gradleDir.resolve("libs.versions.toml"))
+        buildDir.resolve("settings.gradle.kts").writeText("rootProject.name = \"extensions-builder-temp\"")
 
         val buildFileContent =
             """
             import org.jetbrains.kotlin.gradle.dsl.JvmTarget
             plugins {
                 java
-                kotlin("jvm") version "2.2.0"
-                id("com.gradleup.shadow") version "9.0.0-rc1"
+                kotlin("jvm") version libs.versions.kotlin
+                alias(libs.plugins.shadow.jar)
             }
             sourceSets {
                 main {
@@ -40,7 +44,7 @@ class GradleProjectGenerator {
             repositories { mavenCentral() }
 
             dependencies {
-                implementation("org.wiremock:wiremock-standalone:3.13.1")
+                implementation(libs.wiremock)
                 ${config.dependencies?.joinToString("\n                ") { "implementation(\"$it\")" }}
             }
 

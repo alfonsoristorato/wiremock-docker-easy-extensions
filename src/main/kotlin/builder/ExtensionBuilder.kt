@@ -25,7 +25,8 @@ class ExtensionBuilder(
             tempBuildDir.deleteRecursively()
             tempBuildDir.mkdirs()
 
-            gradleGenerator.generate(tempBuildDir, config)
+            val libsVersionsToml = projectRoot.resolve("gradle/libs.versions.toml")
+            gradleGenerator.generate(tempBuildDir, config, libsVersionsToml)
 
             copySourceFilesAndGenerateServiceDiscoveryFiles(
                 projectRoot.toPath(),
