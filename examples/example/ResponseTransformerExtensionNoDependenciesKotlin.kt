@@ -12,7 +12,7 @@ class ResponseTransformerExtensionNoDependenciesKotlin : ResponseTransformerV2 {
         return Response.Builder()
             .status(p0.status)
             .headers(p0.headers)
-            .body("Hey from ResponseTransformerExtensionNoDependenciesKotlin")
+            .body("Response from ${this.javaClass.simpleName}")
             .build()
     }
 

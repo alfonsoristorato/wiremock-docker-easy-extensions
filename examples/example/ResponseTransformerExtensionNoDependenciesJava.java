@@ -10,7 +10,7 @@ public class ResponseTransformerExtensionNoDependenciesJava implements ResponseT
         return new Response.Builder()
                 .status(response.getStatus())
                 .headers(response.getHeaders())
-                .body("Hey from ResponseTransformerExtensionNoDependenciesJava")
+                .body(String.format("Response from %s", this.getClass().getSimpleName()))
                 .build();
     }
 
