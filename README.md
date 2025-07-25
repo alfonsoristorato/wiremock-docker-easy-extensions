@@ -109,6 +109,64 @@ java -jar build/libs/wiremock-extension-builder.jar run <path-to-your-config>.ya
 ```
 
 ---
+
+## Examples
+
+The `examples` directory contains a fully functional sample setup to demonstrate how to use this tool.
+
+### Included Extensions
+
+There are three example extensions in `examples/example`:
+-   `ResponseTransformerExtensionNoDependenciesJava.java`: A simple transformer written in Java with no external dependencies.
+-   `ResponseTransformerExtensionNoDependenciesKotlin.kt`: A simple transformer written in Kotlin with no external dependencies.
+-   `ResponseTransformerExtensionWithDependenciesKotlin.kt`: A transformer written in Kotlin that uses an external dependency (`org.apache.commons:commons-lang3`) to showcase dependency bundling.
+
+All transformers add a simple message to the response body indicating which transformer was used.
+
+### Configuration (`wiremock-docker-easy-extensions-config.yaml`)
+
+The example config file is set up to:
+-   Read the source files from the `examples/example` directory.
+-   Include the `commons-lang3` dependency.
+-   Build the bundled JAR into `build/extensions/wiremock-extensions-bundled.jar`.
+-   Configure WireMock to use mappings from `examples/mappings` and files from `examples/__files`.
+
+### Mappings
+
+The [examples/mappings/requests.json](examples/mappings/requests.json) file defines three stub mappings. 
+Each mapping targets a specific URL and uses one of the custom response transformers. For example:
+
+```json
+{
+  "request": {
+    "method": "GET",
+    "url": "/ResponseTransformerExtensionNoDependenciesKotlin"
+  },
+  "response": {
+    "status": 200,
+    "transformers": ["ResponseTransformerExtensionNoDependenciesKotlin"]
+  }
+}
+```
+
+### How to Run the Example
+
+1.  **Build the tool:**
+    ```sh
+    ./gradlew build
+    ```
+
+2.  **Run WireMock with the extensions:**
+    Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock Docker container in one step.
+    ```sh
+    java -jar build/libs/wiremock-extension-builder.jar run examples/wiremock-docker-easy-extensions-config.yaml
+    ```
+
+3.  **Test with IntelliJ's HTTP Client:**
+    Open the [examples/requests.http](examples/requests.http) file in IntelliJ IDEA. This file contains requests for each of the configured endpoints. Click the "run" icon next to each request to send it to the running WireMock instance.
+
+    For example, sending a `GET` request to `http://localhost:8080/ResponseTransformerExtensionNoDependenciesKotlin` will return a response with the body `Response from ResponseTransformerExtensionNoDependenciesKotlin`, demonstrating that the custom transformer was successfully applied.
+
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE).
