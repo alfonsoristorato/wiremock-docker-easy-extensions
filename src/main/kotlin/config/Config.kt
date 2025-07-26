@@ -8,7 +8,6 @@ data class Config(
     @SerialName("files-location") val filesLocation: String,
     @SerialName("source-files") val sourceFiles: List<String>,
     val dependencies: List<String>?,
-    @SerialName("use-gradle-wrapper") val useGradleWrapper: Boolean,
     val output: OutputConfig,
     @SerialName("wiremock") val wiremockConfig: WireMockConfig,
 )

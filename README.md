@@ -73,9 +73,6 @@ source-files:
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
 
-# (Required) This will soon be removed.
-use-gradle-wrapper: true
-
 # (Required)
 output:
   # (Required) The directory where the generated JAR will be placed.

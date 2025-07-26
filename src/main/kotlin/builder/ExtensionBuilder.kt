@@ -2,6 +2,7 @@ package builder
 
 import config.Config
 import config.OutputConfig
+import utils.Utils.isOsWindows
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -34,7 +35,7 @@ class ExtensionBuilder(
                 config.sourceFiles,
                 config.filesLocation,
             )
-            if (!runGradleBuild(tempBuildDir, config.useGradleWrapper)) {
+            if (!runGradleBuild(tempBuildDir)) {
                 return@runCatching false
             }
             moveFinalJar(tempBuildDir.toPath(), projectRoot.toPath(), config.output)
@@ -98,28 +99,12 @@ class ExtensionBuilder(
      * Runs the Gradle build to compile the extensions and create the JAR file.
      *
      * @param buildDir The directory where the Gradle build will be executed.
-     * @param useGradleWrapper Whether to use the Gradle wrapper or the system Gradle installation.
      * @return true if the build was successful, false otherwise
      */
-    private fun runGradleBuild(
-        buildDir: File,
-        useGradleWrapper: Boolean,
-    ): Boolean {
+    private fun runGradleBuild(buildDir: File): Boolean {
         println("⚙️ Compiling extensions and building JAR...")
 
-        val gradleCommand =
-            when (useGradleWrapper) {
-                true -> {
-                    copyGradleWrapper(File(".").canonicalFile, buildDir)
-                    // TODO test this on Windows and Linux :)
-                    if (System.getProperty("os.name").lowercase().contains("windows")) {
-                        "gradlew.bat"
-                    } else {
-                        "./gradlew"
-                    }
-                }
-                false -> "gradle"
-            }
+        val gradleCommand = takeIf { isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
             .directory(buildDir)
@@ -170,7 +155,7 @@ class ExtensionBuilder(
                 sourceFile.copyTo(targetFile, overwrite = true)
 
                 // TODO See if this works on Linux and a Mac that doesn't restrict usage of gradleW
-                if (path == "gradlew" && !System.getProperty("os.name").lowercase().contains("windows")) {
+                if (path == "gradlew" && !isOsWindows()) {
                     targetFile.setExecutable(true)
                 }
             } else {
