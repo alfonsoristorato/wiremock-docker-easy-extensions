@@ -90,7 +90,7 @@ class ExtensionBuilder(
                         fileName.substringBeforeLast('.').replace('/', '.')
                     }
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
-                println("✅ Created Service Loader for wiremock to discover extensions.")
+                println("✅ Created Service Loader for WireMock to discover extensions.")
             }
             ?: println("⚠️ No extension classes provided, skipping service discovery file generation.")
     }

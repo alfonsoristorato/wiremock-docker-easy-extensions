@@ -1,23 +1,23 @@
-# Stage 1: Build wiremock-easy-extensions jar
-FROM gradle:jdk21-alpine AS wiremock-docker-easy-extensions_builder
-WORKDIR /home/gradle/src
+FROM eclipse-temurin:21-jdk-jammy AS wiremock-docker-easy-extensions_builder
+WORKDIR /builder
 
-RUN git -c http.sslVerify=false clone https://github.com/alfonsoristorato/wiremock-docker-easy-extensions.git .
+RUN apt-get update && \
+    apt-get install -y git && \
+    git clone https://github.com/alfonsoristorato/wiremock-docker-easy-extensions.git .
 
 RUN ./gradlew build --no-daemon
 
-# Stage 2: Build the actual WireMock extensions using the tool
-FROM wiremock-docker-easy-extensions_builder AS wiremock-docker-easy-extensions_compiler
-ARG USER_CONFIG_PATH
-COPY --from=wiremock-docker-easy-extensions_builder /home/gradle/src/build/libs/wiremock-extensions-builder.jar .
-COPY ${USER_CONFIG_PATH}/ ./${USER_CONFIG_PATH}
+FROM wiremock/wiremock:3.13.1
+COPY --from=wiremock-docker-easy-extensions_builder /builder/build/libs/wiremock-extensions-builder.jar .
+COPY --from=wiremock-docker-easy-extensions_builder /builder/gradle ./gradle
+COPY --from=wiremock-docker-easy-extensions_builder /builder/gradlew .
+COPY --from=wiremock-docker-easy-extensions_builder /builder/gradlew.bat .
+COPY --from=wiremock-docker-easy-extensions_builder /builder/entrypoint.sh /entrypoint.sh
 
-RUN java -jar wiremock-extensions-builder.jar build ${USER_CONFIG_PATH}/wiremock-docker-easy-extensions-config.yaml
+RUN apt-get update && \
+    apt-get install -y wget gnupg2 software-properties-common && \
+    wget -qO - https://repos.azul.com/azul-repo.key | gpg --dearmor -o /usr/share/keyrings/azul.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" > /etc/apt/sources.list.d/zulu.list && \
+    apt-get install -y zulu21-jdk
 
-## Stage 3: Run Wiremock with the built extensions, mappings and files
-FROM wiremock/wiremock:latest
-ARG USER_CONFIG_PATH
-
-COPY --from=wiremock-docker-easy-extensions_compiler /home/gradle/src/build/extensions/wiremock-extensions-bundled.jar /var/wiremock/extensions/
-COPY --from=wiremock-docker-easy-extensions_compiler /home/gradle/src/${USER_CONFIG_PATH}/mappings /home/wiremock/mappings/
-COPY --from=wiremock-docker-easy-extensions_compiler /home/gradle/src/${USER_CONFIG_PATH}/__files /home/wiremock/__files/
+ENTRYPOINT ["/entrypoint.sh"]

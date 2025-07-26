@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   wiremock-docker-easy-extensions:
     build:
       context: ..
       dockerfile: Dockerfile
-      args:
-        USER_CONFIG_PATH: ./examples
     container_name: wiremock-with-bundled-extensions
     ports:
       - "8080:8080"
+    volumes:
+      - .:/home/config/examples
