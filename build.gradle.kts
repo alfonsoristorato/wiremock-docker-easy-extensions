@@ -41,7 +41,7 @@ kotlin {
 
 tasks.shadowJar {
     enableRelocation = true
-    archiveBaseName = "wiremock-extension-builder"
+    archiveBaseName = "wiremock-extensions-builder"
     archiveClassifier = ""
     archiveVersion = ""
     manifest {
