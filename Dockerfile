@@ -18,6 +18,7 @@ RUN apt-get update && \
     apt-get install -y wget gnupg2 software-properties-common && \
     wget -qO - https://repos.azul.com/azul-repo.key | gpg --dearmor -o /usr/share/keyrings/azul.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" > /etc/apt/sources.list.d/zulu.list && \
-    apt-get install -y zulu21-jdk
+    apt-get update && \
+    apt-get install -y zulu11-jdk
 
 ENTRYPOINT ["/entrypoint.sh"]

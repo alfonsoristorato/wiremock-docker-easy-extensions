@@ -17,7 +17,7 @@ ORIG_JAVA=$(command -v java)
 ORIG_JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f "$ORIG_JAVA")))}
 
 # Set Java 21 environment to build wiremock-extensions-builder
-export JAVA_HOME=/usr/lib/jvm/zulu21-ca-amd64
+export JAVA_HOME=/usr/lib/jvm/zulu11-ca-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 
 # Run wiremock-extensions-builder
