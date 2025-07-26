@@ -1,10 +1,10 @@
 # Stage 1: Build wiremock-easy-extensions jar
-FROM gradle:jdk21 AS wiremock-docker-easy-extensions_builder
+FROM gradle:jdk21-alpine AS wiremock-docker-easy-extensions_builder
 WORKDIR /home/gradle/src
 
 RUN git -c http.sslVerify=false clone https://github.com/alfonsoristorato/wiremock-docker-easy-extensions.git .
 
-RUN gradle build --no-daemon
+RUN ./gradlew build --no-daemon
 
 # Stage 2: Build the actual WireMock extensions using the tool
 FROM wiremock-docker-easy-extensions_builder AS wiremock-docker-easy-extensions_compiler
