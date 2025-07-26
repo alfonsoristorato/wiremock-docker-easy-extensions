@@ -162,7 +162,47 @@ Each mapping targets a specific URL and uses one of the custom response transfor
 3.  **Test with IntelliJ's HTTP Client:**
     Open the [examples/requests.http](examples/requests.http) file in IntelliJ IDEA. This file contains requests for each of the configured endpoints. Click the "run" icon next to each request to send it to the running WireMock instance.
 
-    For example, sending a `GET` request to `http://localhost:8080/ResponseTransformerExtensionNoDependenciesKotlin` will return a response with the body `Response from ResponseTransformerExtensionNoDependenciesKotlin`, demonstrating that the custom transformer was successfully applied.
+    For example, sending a `GET` request to `http://localhost:8080/java` will return a response with the body `Response from ResponseTransformerExtensionNoDependenciesJava`, demonstrating that the custom transformer was successfully applied.
+
+---
+
+## Usage with Docker (Runtime Volume Mount)
+
+For a more dynamic workflow, it's possible to use a pre-built Docker image and mount the local source files to have the extension JAR built at container startup, then run WireMock with those extensions.
+
+The key is to mount a local directory into `/home/config/` inside the container. The name of the mounted directory inside `/home/config/` should correspond to the top-level package of the extension classes. For example, if the extension's package is `examples.example`, the local directory should be mounted to `/home/config/examples`.
+
+Crucially, the root of this mounted directory must contain a `wiremock-docker-easy-extensions-config.yaml` file. It should also contain `mappings` and `__files` directories. While these can be empty, the `mappings` directory is necessary for WireMock to serve any responses. The paths within the config file must be relative to the container's file system.
+
+### Docker Run Command
+
+Here is an example of how to run the container using `docker run`.
+
+```sh
+docker run -p 8080:8080 \
+  -v .:/home/config/examples \
+  docker-image:version
+```
+
+### Docker Compose
+
+Here is an example of how to run the container using `docker-compose`.
+
+**`docker-compose.yaml`:**
+```yaml
+services:
+  wiremock-docker-easy-extensions:
+    image: docker-image:version
+    container_name: wiremock-with-runtime-extensions
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mounts the current directory - assuming it is called `examples` (containing the config, sources, mappings and files)
+      # to '/home/config/examples' inside the container.
+      - .:/home/config/examples
+```
+
+With this setup, any changes to the local source files in the `examples` directory will be picked up the next time the container is restarted, triggering a new build of the extension JAR automatically.
 
 ## License
 
