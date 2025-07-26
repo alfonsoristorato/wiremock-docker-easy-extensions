@@ -104,6 +104,7 @@ class ExtensionBuilder(
     private fun runGradleBuild(buildDir: File): Boolean {
         println("⚙️ Compiling extensions and building JAR...")
 
+        copyGradleWrapper(File(".").canonicalFile, buildDir)
         val gradleCommand = takeIf { isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
@@ -154,7 +155,6 @@ class ExtensionBuilder(
                 targetFile.parentFile.mkdirs()
                 sourceFile.copyTo(targetFile, overwrite = true)
 
-                // TODO See if this works on Linux and a Mac that doesn't restrict usage of gradleW
                 if (path == "gradlew" && !isOsWindows()) {
                     targetFile.setExecutable(true)
                 }
