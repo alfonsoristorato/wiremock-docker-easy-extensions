@@ -51,11 +51,11 @@ The first step is to build the builder itself.
 ./gradlew build
 ```
 
-This will create an executable JAR at `build/libs/wiremock-extension-builder.jar`.
+This will create an executable JAR at `build/libs/wiremock-extensions-builder.jar`.
 
 ### Configuration
 
-Next, a YAML configuration file needs to be created to define the extensions. See [example config file](examples/wiremock-docker-easy-extensions-config.yaml) for a template.
+Next, a YAML configuration file needs to be created to define the extensions. See [example config file](examples/docker-example/wiremock-docker-easy-extensions-config.yaml) for a template.
 
 **`config.yaml` structure:**
 
@@ -95,7 +95,7 @@ wiremock:
 
 Now, the custom WireMock extensions can be built by running the following command:
 ```sh
-java -jar build/libs/wiremock-extension-builder.jar build <path-to-your-config>.yaml
+java -jar build/libs/wiremock-extensions-builder.jar build <path-to-your-config>.yaml
 ```
 
 If successful, the bundled JAR will be located in the directory specified in the config (e.g., `build/extensions/wiremock-extensions-bundled.jar`).
@@ -105,7 +105,7 @@ If successful, the bundled JAR will be located in the directory specified in the
 To build the JAR and immediately run it with WireMock in Docker, use the `run` command:
 
 ```sh
-java -jar build/libs/wiremock-extension-builder.jar run <path-to-your-config>.yaml
+java -jar build/libs/wiremock-extensions-builder.jar run <path-to-your-config>.yaml
 ```
 
 ---
@@ -133,7 +133,7 @@ The example config file is set up to:
 
 ### Mappings
 
-The [examples/mappings/requests.json](examples/mappings/requests.json) file defines three stub mappings. 
+The [examples/mappings/requests.json](examples/docker-example/mappings/requests.json) file defines three stub mappings. 
 Each mapping targets a specific URL and uses one of the custom response transformers. For example:
 
 ```json
@@ -159,7 +159,7 @@ Each mapping targets a specific URL and uses one of the custom response transfor
 2.  **Run WireMock with the extensions:**
     Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock Docker container in one step.
     ```sh
-    java -jar build/libs/wiremock-extension-builder.jar run examples/wiremock-docker-easy-extensions-config.yaml
+    java -jar build/libs/wiremock-extensions-builder.jar run examples/wiremock-docker-easy-extensions-config.yaml
     ```
 
 3.  **Test with IntelliJ's HTTP Client:**
