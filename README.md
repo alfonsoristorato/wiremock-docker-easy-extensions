@@ -61,7 +61,7 @@ Next, a YAML configuration file needs to be created to define the extensions. Se
 
 ```yaml
 # (Required) The location of your classes relative from where the project JAR will be executed.
-files/location: examples/example
+files-location: examples/example
 
 # (Required - cannot be empty) A list of your classes names with their extension.
 source-files:
@@ -72,20 +72,6 @@ source-files:
 # (Required - can be empty) A list of dependencies required to run your classes, they will be packaged in the final JAR.
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
-
-# (Required)
-output:
-  # (Required) The directory where the generated JAR will be placed.
-  dir: "build/extensions"
-  # (Required) The name of the generated JAR file.
-  jar-name: "wiremock-extensions-bundled.jar"
-  
-# (Required)
-wiremock:
-    # (Required) The directory from where to read, and therefore provide to WireMock, the WireMock mappings.
-  mappings-dir: examples/mappings
-    # (Optional) The directory from where to read, and therefore provide to WireMock, the WireMock files.
-  files-dir: examples/__files
 ```
 
 ### Building Your Extensions

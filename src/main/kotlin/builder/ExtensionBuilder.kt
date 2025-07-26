@@ -38,8 +38,8 @@ class ExtensionBuilder(
             if (!runGradleBuild(tempBuildDir)) {
                 return@runCatching false
             }
-            moveFinalJar(tempBuildDir.toPath(), projectRoot.toPath(), config.output)
-            println("✅ Success! Extension JAR created at: ${config.output.dir}/${config.output.jarName}")
+            moveFinalJar(tempBuildDir.toPath(), projectRoot.toPath(), OutputConfig)
+            println("✅ Success! Extension JAR created at: ${OutputConfig.DIR}/${OutputConfig.JAR_NAME}")
             true
         }.onFailure {
             println("❌ Error building extensions: ${it.message}")
@@ -127,9 +127,9 @@ class ExtensionBuilder(
         outputConfig: OutputConfig,
     ) {
         val sourceJar = buildDir.resolve("build/libs/extensions-bundled.jar")
-        val targetDir = projectRoot.resolve(outputConfig.dir)
+        val targetDir = projectRoot.resolve(outputConfig.DIR)
         targetDir.createDirectories()
-        val targetJar = targetDir.resolve(outputConfig.jarName)
+        val targetJar = targetDir.resolve(outputConfig.JAR_NAME)
         Files.move(sourceJar, targetJar, StandardCopyOption.REPLACE_EXISTING)
     }
 

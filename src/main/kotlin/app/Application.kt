@@ -2,6 +2,8 @@ package app
 
 import builder.ExtensionBuilder
 import config.ConfigLoader
+import config.OutputConfig
+import config.WireMockConfigForRunCommand
 import docker.DockerRunner
 import java.io.File
 import kotlin.system.exitProcess
@@ -41,8 +43,8 @@ class Application {
                 if (success) {
                     val projectRoot = File(".").canonicalFile
                     dockerRunner.runWiremockContainer(
-                        config.wiremockConfig,
-                        config.output,
+                        WireMockConfigForRunCommand(config.filesLocation),
+                        OutputConfig,
                         projectRoot,
                     )
                 } else {

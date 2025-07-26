@@ -8,19 +8,27 @@ data class Config(
     @SerialName("files-location") val filesLocation: String,
     @SerialName("source-files") val sourceFiles: List<String>,
     val dependencies: List<String>?,
-    val output: OutputConfig,
-    @SerialName("wiremock") val wiremockConfig: WireMockConfig,
 )
 
-@Serializable
-data class OutputConfig(
-    val dir: String,
-    @SerialName("jar-name") val jarName: String,
-)
+@ConsistentCopyVisibility
+data class WireMockConfigForRunCommand private constructor(
+    private val filesLocation: String,
+    val mappingsDir: String,
+    val filesDir: String,
+) {
+    constructor(filesLocation: String) : this(
+        filesLocation,
+        "$filesLocation/..",
+        "$filesLocation/..",
+    )
+}
 
-@Serializable
-data class WireMockConfig(
-    @SerialName("mappings-dir")val mappingsDir: String,
-    // TODO make this optional
-    @SerialName("files-dir")val filesDir: String,
-)
+object OutputConfig {
+    const val DIR: String = "build/extensions"
+    const val JAR_NAME: String = "wiremock-extensions-bundled.jar"
+}
+
+object WireMockConfigForRun {
+    const val DIR: String = "build/extensions"
+    const val JAR_NAME: String = "wiremock-extensions-bundled.jar"
+}

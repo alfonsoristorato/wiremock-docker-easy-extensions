@@ -7,11 +7,3 @@ source-files:
 
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
-
-output:
-  dir: "build/extensions"
-  jar-name: "wiremock-extensions-bundled.jar"
-
-wiremock:
-  mappings-dir: examples/mappings
-  files-dir: examples/__files

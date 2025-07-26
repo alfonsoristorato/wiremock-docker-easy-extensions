@@ -1,7 +1,7 @@
 package docker
 
 import config.OutputConfig
-import config.WireMockConfig
+import config.WireMockConfigForRunCommand
 import java.io.File
 
 // TODO most likely this will go away and the app will run on build and Docker Image only
@@ -10,7 +10,7 @@ class DockerRunner {
      * Runs a WireMock container with the generated extensions.
      */
     fun runWiremockContainer(
-        docker: WireMockConfig,
+        docker: WireMockConfigForRunCommand,
         output: OutputConfig,
         projectRoot: File,
     ) {
@@ -21,7 +21,7 @@ class DockerRunner {
         val dockerFilesPath = projectRoot.resolve(docker.filesDir).absolutePath
         val extensionsJarPath =
             projectRoot
-                .resolve(output.dir)
+                .resolve(output.DIR)
                 .absolutePath
 
         val command =
