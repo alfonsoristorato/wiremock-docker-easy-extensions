@@ -1,8 +1,6 @@
 services:
   wiremock-docker-easy-extensions:
-    build:
-      context: ..
-      dockerfile: Dockerfile
+    image: ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:main
     container_name: wiremock-with-bundled-extensions
     ports:
       - "8080:8080"

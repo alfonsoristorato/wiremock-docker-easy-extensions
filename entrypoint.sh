@@ -12,12 +12,12 @@ echo "Using config subdir: $CONFIG_SUBDIR"
 cp -r "$CONFIG_SUBDIR/mappings" /home/wiremock/
 cp -r "$CONFIG_SUBDIR/__files" /home/wiremock/
 
-# Save original Java environment
+# Save original Java environment - WireMock Temurin jre
 ORIG_JAVA=$(command -v java)
 ORIG_JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f "$ORIG_JAVA")))}
 
-# Set Java 21 environment to build wiremock-extensions-builder
-export JAVA_HOME=/usr/lib/jvm/zulu11-ca-amd64
+## Set Java Home to installed JDK as WireMock only has JRE and we need to compile the JAR
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 
 # Run wiremock-extensions-builder
@@ -26,7 +26,7 @@ java -jar wiremock-extensions-builder.jar build "$CONFIG_SUBDIR/wiremock-docker-
 # Copy bundled extensions to WireMock extensions folder
 cp build/extensions/wiremock-extensions-bundled.jar /var/wiremock/extensions/
 
-# Revert to original Java environment
+# Revert to original JAVA HOME - WireMock Temurin jre
 export JAVA_HOME=$ORIG_JAVA_HOME
 export PATH=$(dirname "$ORIG_JAVA"):$PATH
 
