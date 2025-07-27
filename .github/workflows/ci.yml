@@ -12,9 +12,16 @@ jobs:
   call_codeql_analysis:
     name: CodeQL Analysis
     uses: ./.github/workflows/codeql.yml
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
   call_publish:
     name: Build and Publish
     needs: call_codeql_analysis
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'release' }}
     uses: ./.github/workflows/publish-to-ghcr.yml
+    permissions:
+      contents: read
+      packages: write
