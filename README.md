@@ -61,6 +61,17 @@ source-files:
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
 ```
+
+### Extension Language and Compatibility
+-   **Supported Languages**: Extensions can be written in either **Java** or **Kotlin**.
+-   **Java 11 Compatibility**: The provided source code must be compatible with Java 11. The builder tool compiles the code to target the JVM 11 runtime, which is used by the official WireMock Docker image. This means that language features from newer Java versions are not supported.
+-   **Example of an Incompatible Feature**: Using Java's `record` keyword will cause the build to fail, as it was introduced after Java 11.
+
+    ```java
+    // This will fail to compile
+    public record User(String name, int age) {}
+    ```
+
 ## How to Use - Docker
 
 The primary way to use this tool is via the pre-built Docker image. This method allows you to build and run your extensions without needing to install Java or Gradle locally.
