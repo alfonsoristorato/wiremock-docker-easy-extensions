@@ -29,12 +29,6 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
-      - name: Generate coverage report
-        run: ./gradlew koverXmlReport
-
-      - name: Verify coverage thresholds
-        run: ./gradlew koverVerify
-
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()

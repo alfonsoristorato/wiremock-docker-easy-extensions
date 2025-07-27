@@ -6,7 +6,7 @@ kaml                            = "0.85.0"
 kotest                          = "5.9.1"
 kotlin                          = "2.2.0"
 kotlinx-serialization-json      = "1.9.0"
-kover                           = "0.8.3"
+kover                           = "0.9.1"
 mockk                           = "1.13.11"
 shadow-jar                      = "9.0.0-rc2"
 

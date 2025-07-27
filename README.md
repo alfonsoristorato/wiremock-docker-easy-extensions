@@ -1,6 +1,8 @@
 # wiremock-docker-easy-extensions
 
-[![CodeQL](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml/badge.svg?branch=main&event=push)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml) [![Run Tests](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/test.yml/badge.svg)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/test.yml) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/alfonsoristorato/wiremock-docker-easy-extensions)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/latest)
+[![CodeQL](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml/badge.svg?branch=main&event=push)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml) 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/alfonsoristorato/wiremock-docker-easy-extensions)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/latest)
 
 ## Overview
 

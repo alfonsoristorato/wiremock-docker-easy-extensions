@@ -36,6 +36,7 @@ tasks.jar {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.koverVerify)
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_11
