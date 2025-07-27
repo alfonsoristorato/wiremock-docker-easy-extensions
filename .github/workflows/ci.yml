@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/test.yml
     permissions:
       contents: read
+      checks: write
 
   call_codeql_analysis:
     name: CodeQL Analysis
