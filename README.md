@@ -78,6 +78,16 @@ dependencies:
 
 The primary way to use this tool is via the pre-built Docker image. This method allows you to build and run your extensions without needing to install Java or Gradle locally.
 
+### Docker Image Tags
+
+The image is published to the [GitHub Container Registry](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/pkgs/container/wiremock-docker-easy-extensions). The following tags are available:
+
+-   `latest`: Points to the most recent stable (non-pre-release) version.
+-   `X.Y.Z` (e.g., `1.0.0`): A specific release version.
+-   `X.Y` (e.g., `1.0`): The latest release within a minor version range.
+-   `X` (e.g., `1`): The latest release within a major version range.
+-   `main`: The latest build from the `main` branch. This is a development version and may be unstable.
+
 ### Usage
 
 The Docker image is designed to read the directory structure from a mounted local directory. This directory must be mounted into `/home/config/(name-of-your-root-directory)` inside the container.
