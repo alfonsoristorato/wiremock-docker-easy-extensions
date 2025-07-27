@@ -26,9 +26,19 @@ java -jar wiremock-extensions-builder.jar build "$CONFIG_SUBDIR/wiremock-docker-
 # Copy bundled extensions to WireMock extensions folder
 cp build/extensions/wiremock-extensions-bundled.jar /var/wiremock/extensions/
 
+# Remove the JDK, as it is no longer needed
+echo "🧹 Removing JDK..."
+apt-get purge -y openjdk-11-jdk >/dev/null 2>&1 && apt-get autoremove -y --purge >/dev/null 2>&1
+
 # Revert to original JAVA HOME - WireMock Temurin jre
 export JAVA_HOME=$ORIG_JAVA_HOME
 export PATH=$(dirname "$ORIG_JAVA"):$PATH
 
+echo "Checking if javac is still available..."
+if command -v javac >/dev/null 2>&1; then
+  echo "❌ JDK still present: javac found at $(command -v javac)"
+else
+  echo "✅ JDK successfully removed: javac not found"
+fi
 # Start the original WireMock entrypoint
 exec /docker-entrypoint.sh "$@"
