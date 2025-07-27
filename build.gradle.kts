@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlin
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.gradle.ktlint)
+    alias(libs.plugins.kover)
 }
 
 group = "alfonsoristorato"
@@ -50,4 +51,17 @@ tasks.shadowJar {
         attributes["Main-Class"] = "app.Application"
     }
     mergeServiceFiles()
+}
+
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(0) // TODO replace with actual minimum coverage percentage once there are tests
+            }
+            rule("Class coverage") {
+                minBound(0) // TODO replace with actual minimum coverage percentage once there are tests
+            }
+        }
+    }
 }
