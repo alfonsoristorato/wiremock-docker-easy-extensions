@@ -27,8 +27,3 @@ object OutputConfig {
     const val DIR: String = "build/extensions"
     const val JAR_NAME: String = "wiremock-extensions-bundled.jar"
 }
-
-object WireMockConfigForRun {
-    const val DIR: String = "build/extensions"
-    const val JAR_NAME: String = "wiremock-extensions-bundled.jar"
-}
