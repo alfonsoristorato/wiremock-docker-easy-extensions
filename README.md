@@ -1,6 +1,6 @@
 # wiremock-docker-easy-extensions
 
-[![CodeQL](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml)
 
 ## Overview
 
