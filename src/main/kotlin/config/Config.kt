@@ -18,8 +18,8 @@ data class WireMockConfigForRunCommand private constructor(
 ) {
     constructor(filesLocation: String) : this(
         filesLocation,
-        "$filesLocation/..",
-        "$filesLocation/..",
+        "${filesLocation.substringBefore("/")}/mappings",
+        "${filesLocation.substringBefore("/")}/__files",
     )
 }
 
