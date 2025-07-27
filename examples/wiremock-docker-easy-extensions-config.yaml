@@ -1,4 +1,4 @@
-files-location: examples/example
+source-files-location: examples/example
 
 source-files:
   - ResponseTransformerExtensionNoDependenciesJava.java

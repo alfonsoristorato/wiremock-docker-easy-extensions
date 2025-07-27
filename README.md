@@ -50,7 +50,7 @@ rootPackage/
 ### `wiremock-docker-easy-extensions-config.yaml` Structure (following the directory structure above)
 ```yaml
 # (Required) The location of the classes relative from where the project JAR will be executed or Docker Base image will mount .
-files-location: rootPackage/subPackage
+source-files-location: rootPackage/subPackage
 
 # (Required - cannot be empty) A list of classes' names with their extension.
 source-files:

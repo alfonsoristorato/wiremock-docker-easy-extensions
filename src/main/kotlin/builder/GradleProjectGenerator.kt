@@ -27,13 +27,13 @@ class GradleProjectGenerator {
             sourceSets {
                 main {
                     java {
-                        srcDirs("${config.filesLocation}")
+                        srcDirs("${config.sourceFilesLocation}")
                     }
                     kotlin {
-                        srcDirs("${config.filesLocation}")
+                        srcDirs("${config.sourceFilesLocation}")
                     }
                     resources {
-                        srcDirs("${config.filesLocation}/resources")
+                        srcDirs("${config.sourceFilesLocation}/resources")
                     }
                 }
             }

@@ -33,7 +33,7 @@ class ExtensionBuilder(
                 projectRoot.toPath(),
                 tempBuildDir.toPath(),
                 config.sourceFiles,
-                config.filesLocation,
+                config.sourceFilesLocation,
             )
             if (!runGradleBuild(tempBuildDir)) {
                 return@runCatching false
@@ -55,17 +55,17 @@ class ExtensionBuilder(
      * @param projectRoot The root directory of the project.
      * @param buildDir The directory where the build will be performed.
      * @param sources List of source files to copy.
-     * @param filesLocation Location of the files. it will be the final package too.
+     * @param sourceFilesLocation Location of the files. it will be the final package too.
      */
     private fun copySourceFilesAndGenerateServiceDiscoveryFiles(
         projectRoot: Path,
         buildDir: Path,
         sources: List<String>,
-        filesLocation: String,
+        sourceFilesLocation: String,
     ) {
         val fileNames = mutableListOf<String>()
         sources.forEach { file ->
-            "$filesLocation/$file"
+            "$sourceFilesLocation/$file"
                 .let { sourcePath ->
                     projectRoot
                         .resolve(sourcePath)
@@ -82,7 +82,7 @@ class ExtensionBuilder(
 
         takeIf { fileNames.isNotEmpty() }
             ?.let {
-                val servicesDir = buildDir.resolve("$filesLocation/resources/META-INF/services")
+                val servicesDir = buildDir.resolve("$sourceFilesLocation/resources/META-INF/services")
                 servicesDir.createDirectories()
                 val serviceLoaderFile = servicesDir.resolve("com.github.tomakehurst.wiremock.extension.Extension")
                 val serviceLoaderContent =

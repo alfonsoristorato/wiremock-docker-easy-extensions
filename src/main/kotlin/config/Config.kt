@@ -5,21 +5,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Config(
-    @SerialName("files-location") val filesLocation: String,
+    @SerialName("source-files-location") val sourceFilesLocation: String,
     @SerialName("source-files") val sourceFiles: List<String>,
     val dependencies: List<String>?,
 )
 
 @ConsistentCopyVisibility
 data class WireMockConfigForRunCommand private constructor(
-    private val filesLocation: String,
+    private val sourceFilesLocation: String,
     val mappingsDir: String,
     val filesDir: String,
 ) {
-    constructor(filesLocation: String) : this(
-        filesLocation,
-        "${filesLocation.substringBefore("/")}/mappings",
-        "${filesLocation.substringBefore("/")}/__files",
+    constructor(sourceFilesLocation: String) : this(
+        sourceFilesLocation,
+        "${sourceFilesLocation.substringBefore("/")}/mappings",
+        "${sourceFilesLocation.substringBefore("/")}/__files",
     )
 }
 
