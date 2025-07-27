@@ -2,33 +2,34 @@
 
 ## Overview
 
-**wiremock-docker-easy-extensions** is a toolkit designed to simplify the process of building and packaging custom WireMock extensions for use with the official [WireMock Docker image](https://hub.docker.com/r/wiremock/wiremock) 
-but mainly exposes a [ready to use docker-image](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/pkgs/container/wiremock-docker-easy-extensions) that packages the extensions provided and spins up `WireMock` with them, along with mappings and files.
+**wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the official [WireMock Docker image](https://hub.docker.com/r/wiremock/wiremock).
+
+Its main purpose is to expose a [ready-to-use Docker image](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/pkgs/container/wiremock-docker-easy-extensions) that packages provided extensions on the fly and spins up `WireMock` with them, along with the necessary mappings and files.
 
 ### Why does this exist?
 
-When using the `WireMock` Docker image, adding custom extensions requires:
-- Packaging extension(s) as a JAR, ensuring that the dependencies needed for the extension classes are included.
-- Ensuring the JAR is built to run with Java 11 (since the base WireMock Docker image only has JRE 11).
-- Placing the JAR in the correct location and configuring WireMock to load it.
+When using the `WireMock` Docker image, adding custom extensions requires you to:
+- Package your extension(s) as a JAR, ensuring all dependencies are included.
+- Ensure the JAR is built to run with Java 11, as the base WireMock image uses a JRE 11.
+- Place the JAR in the correct location and configure WireMock to load it.
 
-This project automates and streamlines these steps by dynamically generating a dedicated Gradle project for extensions, building the extensions targeting JVM 11, and packaging them into a single JAR.
-It is then able to spin up a WireMock instance with these extensions, mappings, and files in a Docker container.
+This project automates these steps by dynamically generating a dedicated Gradle project, building the extensions to target JVM 11, and packaging them into a single JAR that is then fed to a running WireMock instance.
 
-### WireMock extensions docs
-WireMock extensions are documented in the [WireMock documentation](https://wiremock.org/docs/extending-wiremock/).
+### WireMock Extensions Docs
+For more information on creating extensions, see the [official WireMock documentation](https://wiremock.org/docs/extending-wiremock/).
 
 ---
 
 ## How it Works
 
-This tool works in a few steps:
-1.  Reads a `wiremock-docker-easy-extensions-config.yaml` file that is provided.
-2.  Dynamically creates a temporary Gradle project.
-3.  Copies extensions source code into this new project.
-4.  Generates a `build.gradle.kts` file configured to target JVM 11 and includes any dependencies specified.
-5.  Builds this project to produce a single JAR containing extensions, their dependencies and service loader files for WireMock to discover them.
-6.  Feeds this JAR to the WireMock Docker image, allowing it to run with the custom extensions.
+The tool follows these steps:
+1.  Reads a `wiremock-docker-easy-extensions-config.yaml` file from a mounted volume.
+2.  Dynamically creates a temporary Gradle project inside the container.
+3.  Copies your extension source code into this new project.
+4.  Generates a `build.gradle.kts` file configured to target JVM 11 and include any specified dependencies.
+5.  Builds this project to produce a single JAR containing your extensions, their dependencies and a Java ServiceLoader as WireMock requires this to discover extension classes.
+6.  Starts WireMock, automatically loading the newly created JAR.
+
 ---
 
 ## Requirements
@@ -60,34 +61,24 @@ source-files:
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
 ```
+## How to Use - Docker
 
-## How to Use 
+The primary way to use this tool is via the pre-built Docker image. This method allows you to build and run your extensions without needing to install Java or Gradle locally.
 
-A docker-image is provided that can be used to build and run WireMock with custom extensions. 
-This image is designed to work seamlessly with the WireMock Docker image, allowing you to easily add your own extensions without needing to manually build and configure them.
+### Usage
 
-## Requirements
-To use the provided Docker image, you need to ensure that your local directory structure matches the expected format outlined above.
-### Mounting Local Directory
-The provided Docker image expects to read the provided directory structure from a mounted local directory, which needs to be places into `/home/config/(name-of-your-top-level-package)` inside the container.
+The Docker image is designed to read the directory structure from a mounted local directory. This directory must be mounted into `/home/config/(name-of-your-root-directory)` inside the container.
 
-For the example above, where the top-level package is `rootPackage`, you would mount your local directory to `/home/config/rootPackage`.
+For the example above, where the root directory is `rootPackage`, you would mount it to `/home/config/rootPackage`.
 
-### Docker Run Command
-
-Here is an example of how to run the container using `docker run`.
-
+#### Docker Run
 ```sh
 docker run -p 8080:8080 \
   -v .:/home/config/rootPackage \
   ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:<version>
 ```
 
-### Docker Compose
-
-Here is an example of how to run the container using `docker-compose`.
-
-**`docker-compose.yaml`:**
+#### Docker Compose
 ```yaml
 services:
   wiremock-docker-easy-extensions:
@@ -98,10 +89,13 @@ services:
     volumes:
       - .:/home/config/rootPackage
 ```
+With this setup, any changes to your local source files will be picked up the next time the container is restarted, triggering a new build of your extension JAR automatically.
 
-With this setup, any changes to the local source files in the `examples` directory will be picked up the next time the container is restarted, triggering a new build of the extension JAR automatically.
+---
 
-## Getting Started Locally
+## Local Development
+
+This section is for those who wish to build the `wiremock-docker-easy-extensions` tool itself.
 
 ### Prerequisites
 
@@ -111,27 +105,23 @@ With this setup, any changes to the local source files in the `examples` directo
 
 ### Building the Tool
 
-The first step is to build the builder itself.
-
+The first step is to build the executable JAR for the builder tool.
 ```sh
 ./gradlew build
 ```
+This will create the JAR at `build/libs/wiremock-extensions-builder.jar`.
 
-This will create an executable JAR at `build/libs/wiremock-extensions-builder.jar`.
+### CLI Commands
 
-### Building Your Extensions - `build` Command
-
-Now, the custom WireMock extensions can be built by running the following command:
+#### `build`
+To build the extension JAR without running WireMock:
 ```sh
 java -jar build/libs/wiremock-extensions-builder.jar build <path-to-your-config>.yaml
 ```
+If successful, the bundled JAR will be located at `build/extensions/wiremock-extensions-bundled.jar`.
 
-If successful, the bundled JAR will be located in the directory specified in the config (e.g., `build/extensions/wiremock-extensions-bundled.jar`).
-
-### Running WireMock with Extensions - `run` Command
-
-To build the JAR and immediately run it with WireMock in Docker, use the `run` command:
-
+#### `run`
+To build the JAR and immediately run it with WireMock in a Docker container:
 ```sh
 java -jar build/libs/wiremock-extensions-builder.jar run <path-to-your-config>.yaml
 ```
@@ -140,28 +130,24 @@ java -jar build/libs/wiremock-extensions-builder.jar run <path-to-your-config>.y
 
 ## Examples
 
-The `examples` directory contains a fully functional sample setup to demonstrate how to use this tool.
+The `examples` directory contains a fully functional sample setup that follows the required directory structure and demonstrates how to use this tool.
 
 ### Included Extensions
 
 There are three example extensions in `examples/example`:
--   `ResponseTransformerExtensionNoDependenciesJava.java`: A simple transformer written in Java with no external dependencies.
--   `ResponseTransformerExtensionNoDependenciesKotlin.kt`: A simple transformer written in Kotlin with no external dependencies.
--   `ResponseTransformerExtensionWithDependenciesKotlin.kt`: A transformer written in Kotlin that uses an external dependency (`org.apache.commons:commons-lang3`) to showcase dependency bundling.
-
-All transformers add a simple message to the response body indicating which transformer was used.
+-   `ResponseTransformerExtensionNoDependenciesJava.java`: A simple transformer in Java.
+-   `ResponseTransformerExtensionNoDependenciesKotlin.kt`: A simple transformer in Kotlin.
+-   `ResponseTransformerExtensionWithDependenciesKotlin.kt`: A Kotlin transformer that uses an external dependency (`org.apache.commons:commons-lang3`).
 
 ### Configuration (`wiremock-docker-easy-extensions-config.yaml`)
 
 The example config file is set up to:
 -   Read the source files from the `examples/example` directory.
 -   Include the `commons-lang3` dependency.
--   Build the bundled JAR into `build/extensions/wiremock-extensions-bundled.jar`.
--   Configure WireMock to use mappings from `examples/mappings` and files from `examples/__files`.
 
 ### Mappings
 
-The [examples/mappings/requests.json](examples/docker-example/mappings/requests.json) file defines three stub mappings. 
+The [examples/mappings/requests.json](examples/mappings/requests.json) file defines three stub mappings.
 Each mapping targets a specific URL and uses one of the custom response transformers. For example:
 
 ```json
@@ -184,8 +170,8 @@ Each mapping targets a specific URL and uses one of the custom response transfor
     ./gradlew build
     ```
 
-2.  **Run WireMock with the extensions:**
-    Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock Docker container in one step.
+2.  **Run the example:**
+    Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock container in one step.
     ```sh
     java -jar build/libs/wiremock-extensions-builder.jar run examples/wiremock-docker-easy-extensions-config.yaml
     ```
@@ -193,9 +179,9 @@ Each mapping targets a specific URL and uses one of the custom response transfor
 3.  **Test with IntelliJ's HTTP Client:**
     Open the [examples/requests.http](examples/requests.http) file in IntelliJ IDEA. This file contains requests for each of the configured endpoints. Click the "run" icon next to each request to send it to the running WireMock instance.
 
-    For example, sending a `GET` request to `http://localhost:8080/java` will return a response with the body `Response from ResponseTransformerExtensionNoDependenciesJava`, demonstrating that the custom transformer was successfully applied.
+    For example, a `GET` request to `http://localhost:8080/ResponseTransformerExtensionNoDependenciesJava` will return a response with the body `Response from ResponseTransformerExtensionNoDependenciesJava`.
 
-Steps `1` and `2` can also be run using the provided IntelliJ run configuration:
+Steps `1` and `2` can also be executed using the provided IntelliJ run configuration:
 
 ![IntelliJ-run-command.png](readme-images/IntelliJ-run-command.png)
 ---
