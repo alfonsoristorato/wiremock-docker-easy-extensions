@@ -1,0 +1,20 @@
+name: Build, Scan and Publish
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  release:
+    types: [published]
+
+jobs:
+  call_codeql_analysis:
+    name: CodeQL Analysis
+    uses: ./.github/workflows/codeql.yml
+
+  call_publish:
+    name: Build and Publish
+    needs: call_codeql_analysis
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'release' }}
+    uses: ./.github/workflows/publish-to-ghcr.yml
