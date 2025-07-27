@@ -3,6 +3,7 @@
 #Main project
 gradle-ktlint                   = "13.0.0"
 kaml                            = "0.85.0"
+kotest                          = "5.9.1"
 kotlin                          = "2.2.0"
 kotlinx-serialization-json      = "1.9.0"
 shadow-jar                      = "9.0.0-rc2"
@@ -13,12 +14,15 @@ wiremock                        = "3.13.1"
 [libraries]
 #Main project
 kaml                            = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+kotest-assertions-core          = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-runner-junit5            = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-stdlib                   = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
 kotlinx-serialization-json      = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 # Gradle generator
 wiremock                        = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
 
 [bundles]
+kotest = ["kotest-runner-junit5", "kotest-assertions-core"]
 
 [plugins]
 gradle-ktlint                   = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "gradle-ktlint" }

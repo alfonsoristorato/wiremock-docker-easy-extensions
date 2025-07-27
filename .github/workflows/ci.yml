@@ -3,14 +3,19 @@ name: Build, Scan and Publish
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
+  call_test:
+    name: Run Tests
+    uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
+
   call_codeql_analysis:
     name: CodeQL Analysis
+    needs: call_test
     uses: ./.github/workflows/codeql.yml
     permissions:
       actions: read
@@ -19,7 +24,7 @@ jobs:
 
   call_publish:
     name: Build and Publish
-    needs: call_codeql_analysis
+    needs: [ call_test, call_codeql_analysis ]
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'release' }}
     uses: ./.github/workflows/publish-to-ghcr.yml
     permissions:

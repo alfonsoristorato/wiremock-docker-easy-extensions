@@ -22,7 +22,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Testing
-    testImplementation(kotlin("test"))
+    testImplementation(libs.bundles.kotest)
 }
 
 tasks.build {

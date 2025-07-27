@@ -1,0 +1,8 @@
+source-files-location: src/main/kotlin
+
+source-files:
+  - File1.kt
+  - File2.java
+
+dependencies: []
+
