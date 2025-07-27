@@ -21,7 +21,6 @@ class GradleProjectGenerator {
             """
             import org.jetbrains.kotlin.gradle.dsl.JvmTarget
             plugins {
-                java
                 kotlin("jvm") version libs.versions.kotlin
                 alias(libs.plugins.shadow.jar)
             }
