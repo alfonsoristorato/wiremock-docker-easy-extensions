@@ -1,6 +1,7 @@
 package config
 
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.decodeFromStream
 import java.io.File
 
 class ConfigLoader {
