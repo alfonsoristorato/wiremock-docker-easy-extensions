@@ -1,5 +1,7 @@
 # wiremock-docker-easy-extensions
 
+[![CodeQL](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/actions/workflows/codeql.yml)
+
 ## Overview
 
 **wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the official [WireMock Docker image](https://hub.docker.com/r/wiremock/wiremock).
