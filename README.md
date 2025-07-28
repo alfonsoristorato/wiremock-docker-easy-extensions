@@ -8,7 +8,7 @@
 
 **wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the official [WireMock Docker image](https://hub.docker.com/r/wiremock/wiremock).
 
-Its main purpose is to expose a [ready-to-use Docker image](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/pkgs/container/wiremock-docker-easy-extensions) that packages provided extensions on the fly and spins up `WireMock` with them, along with the necessary mappings and files.
+Its main purpose is to expose a ready to use service that packages provided extensions on the fly and spins up `WireMock` with them, along with the necessary mappings and files.
 
 ### Why does this exist?
 
@@ -127,7 +127,7 @@ This method is useful for local testing or for integrating the tool into custom 
 ### Usage
 
 1.  **Download the JAR:**
-    Use `curl` to download the JAR from the latest release. Replace `<version>` with the desired release tag (e.g., `v1.0.1`).
+    Use `curl` to download the JAR from the latest release. Replace `<version>` with the desired release tag.
 
     ```sh
     # Replace <version> with a specific release tag from the releases page
