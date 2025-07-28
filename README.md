@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/alfonsoristorato/wiremock-docker-easy-extensions)](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/latest)
 
+---
+
 ## Overview
 
 **wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the
@@ -92,6 +94,8 @@ dependencies:
   // This will fail to compile
   public record User(String name, int age) {}
   ```
+
+---
 
 ## How to Use - Docker
 
@@ -306,6 +310,7 @@ Each mapping targets a specific URL and uses one of the custom response transfor
 Steps `1` and `2` can also be executed using the provided IntelliJ run configuration:
 
 ![IntelliJ-run-command.png](readme-images/IntelliJ-run-command.png)
+
 ---
 
 ## License
