@@ -20,8 +20,8 @@ ORIG_JAVA_HOME=${JAVA_HOME:-$(dirname $(dirname $(readlink -f "$ORIG_JAVA")))}
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 
-# Run wiremock-extensions-builder
-java -jar wiremock-extensions-builder.jar build "$CONFIG_SUBDIR/wiremock-docker-easy-extensions-config.yaml"
+# Run wiremock-docker-easy-extensions
+java -jar wiremock-docker-easy-extensions.jar build "$CONFIG_SUBDIR/wiremock-docker-easy-extensions-config.yaml"
 
 # Copy bundled extensions to WireMock extensions folder
 cp build/extensions/wiremock-extensions-bundled.jar /var/wiremock/extensions/

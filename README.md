@@ -8,7 +8,7 @@
 
 **wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the official [WireMock Docker image](https://hub.docker.com/r/wiremock/wiremock).
 
-Its main purpose is to expose a [ready-to-use Docker image](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/pkgs/container/wiremock-docker-easy-extensions) that packages provided extensions on the fly and spins up `WireMock` with them, along with the necessary mappings and files.
+Its main purpose is to expose a ready to use service that packages provided extensions on the fly and spins up `WireMock` with them, along with the necessary mappings and files.
 
 ### Why does this exist?
 
@@ -118,6 +118,37 @@ With this setup, any changes to your local source files will be picked up the ne
 
 ---
 
+## How to Use - Standalone JAR (CLI)
+
+For users who prefer to run the tool directly without Docker, the executable JAR is available for download from the project's [GitHub Releases page](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases).
+
+This method is useful for local testing or for integrating the tool into custom scripts.
+
+### Usage
+
+1.  **Download the JAR:**
+    Use `curl` to download the JAR from the latest release. Replace `<version>` with the desired release tag.
+
+    ```sh
+    # Replace <version> with a specific release tag from the releases page
+    VERSION="<version>"
+    curl -L -o wiremock-docker-easy-extensions.jar \
+      "https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/download/${VERSION}/wiremock-docker-easy-extensions.jar"
+    ```
+
+2.  **Run the tool:**
+    Once downloaded, you can execute it using `java -jar`. The tool provides two main commands: `build` and `run`.
+
+    ```sh
+    # Build the extension JAR without starting WireMock
+    java -jar wiremock-docker-easy-extensions.jar build <path-to-your-config>.yaml
+
+    # Build the JAR and immediately run WireMock in a Docker container
+    java -jar wiremock-docker-easy-extensions.jar run <path-to-your-config>.yaml
+    ```
+
+---
+
 ## Local Development
 
 This section is for those who wish to build the `wiremock-docker-easy-extensions` tool itself.
@@ -134,21 +165,21 @@ The first step is to build the executable JAR for the builder tool.
 ```sh
 ./gradlew build
 ```
-This will create the JAR at `build/libs/wiremock-extensions-builder.jar`.
+This will create the JAR at `build/libs/wiremock-docker-easy-extensions.jar`.
 
 ### CLI Commands
 
 #### `build`
 To build the extension JAR without running WireMock:
 ```sh
-java -jar build/libs/wiremock-extensions-builder.jar build <path-to-your-config>.yaml
+java -jar build/libs/wiremock-docker-easy-extensions.jar build <path-to-your-config>.yaml
 ```
 If successful, the bundled JAR will be located at `build/extensions/wiremock-extensions-bundled.jar`.
 
 #### `run`
 To build the JAR and immediately run it with WireMock in a Docker container:
 ```sh
-java -jar build/libs/wiremock-extensions-builder.jar run <path-to-your-config>.yaml
+java -jar build/libs/wiremock-docker-easy-extensions.jar run <path-to-your-config>.yaml
 ```
 
 ---
@@ -198,7 +229,7 @@ Each mapping targets a specific URL and uses one of the custom response transfor
 2.  **Run the example:**
     Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock container in one step.
     ```sh
-    java -jar build/libs/wiremock-extensions-builder.jar run examples/wiremock-docker-easy-extensions-config.yaml
+    java -jar build/libs/wiremock-docker-easy-extensions.jar run examples/wiremock-docker-easy-extensions-config.yaml
     ```
 
 3.  **Test with IntelliJ's HTTP Client:**
