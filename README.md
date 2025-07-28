@@ -161,15 +161,16 @@ This method is useful for local testing or for integrating the tool into custom 
     curl -L -o wiremock-docker-easy-extensions.jar \
       "https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/download/${VERSION}/wiremock-docker-easy-extensions.jar"
     ```
-   
-2. **Place the JAR:**
-   Place the downloaded JAR in the same directory as your root configuration folder.
-   The tool expects the JAR and the configuration folder to be siblings.
 
-   For the example above, where the root directory of the files is `rootPackage`, the folder structure would look like
-   this:
+2. **Location of command execution:**
+   There is one limitation to this, the JAR can be placed pretty much anywhere, but it needs to be called from one level
+   above the directory of config.
+   This is a limitation due to how the tool will eventually create the ServiceLoader resources, and it seemed a good
+   compromise.
+   For the example above, where the root directory of the files is `rootPackage`, we will place the JAR in the same
+   directory as `rootPackage`, so the structure will look like:
     ```
-    my-project/
+    aDirectory/
     ├── rootPackage/
     │   ├── __files/
     │   │   └── response.json
@@ -184,15 +185,16 @@ This method is useful for local testing or for integrating the tool into custom 
 
 3. **Run the tool:**
    Once downloaded, you can execute it using `java -jar`. The tool provides two main commands: `build` and `run`.
+   Following the example above, you would run the tool from the directory `aDirectory`:
 
     ```sh
     # Build the extension JAR without starting WireMock
-    java -jar wiremock-docker-easy-extensions.jar build <path-to-your-config>.yaml
+    java -jar wiremock-docker-easy-extensions.jar build rootPackage/wiremock-docker-easy-extensions-config.yaml
     ```
-   
+
     ```sh
     # Build the JAR and immediately run WireMock in a Docker container
-    java -jar wiremock-docker-easy-extensions.jar run <path-to-your-config>.yaml
+    java -jar wiremock-docker-easy-extensions.jar run rootPackage/wiremock-docker-easy-extensions-config.yaml
     ```
 
 ---
