@@ -7,12 +7,10 @@ plugins {
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.gradle.ktlint)
     alias(libs.plugins.kover)
-    `maven-publish`
 }
 
 group = "alfonsoristorato"
-// TODO align this version with gh releases
-version = project.findProperty("projectVersion") ?: "1.0.0"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -49,31 +47,13 @@ kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_11
 
 tasks.shadowJar {
     enableRelocation = true
-    archiveBaseName = "wiremock-extensions-builder"
+    archiveBaseName = "wiremock-docker-easy-extensions"
     archiveClassifier = ""
     archiveVersion = ""
     manifest {
         attributes["Main-Class"] = "app.Application"
     }
     mergeServiceFiles()
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("shadow") {
-            from(components["shadow"])
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/alfonsoristorato/wiremock-docker-easy-extensions")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
 }
 
 kover {

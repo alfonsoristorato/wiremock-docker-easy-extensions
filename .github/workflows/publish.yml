@@ -4,12 +4,10 @@ on:
   workflow_call:
 
 jobs:
-  publish-jar:
+  build-and-release-jar:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
-
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,27 +18,22 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
 
-      - name: Extract version
-        id: get_version
-        run: |
-          VERSION=${{ github.ref_name }}
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            # Strip 'v' prefix if present
-            VERSION=${VERSION#v}
-          else
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            VERSION="1.0.0-${VERSION}-${SHORT_SHA}-SNAPSHOT"
-          fi
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Build with Gradle
+        run: ./gradlew build
 
-      - name: Publish package
-        run: ./gradlew publish -PprojectVersion=${{ steps.get_version.outputs.version }}
+      - name: Upload Release Asset
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./build/libs/wiremock-docker-easy-extensions.jar
+          asset_name: wiremock-docker-easy-extensions.jar
+          asset_content_type: application/java-archive
 
   publish-docker:
     runs-on: ubuntu-latest
