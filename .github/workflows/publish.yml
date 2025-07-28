@@ -2,9 +2,17 @@ name: Publish
 
 on:
   workflow_call:
+    inputs:
+      event_name:
+        required: true
+        type: string
+      upload_url:
+        required: false
+        type: string
 
 jobs:
   build-and-release-jar:
+    if: ${{ inputs.event_name == 'release' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,21 +26,17 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-#      - name: Grant execute permission for gradlew
-#        run: chmod +x gradlew
-
       - name: Build with Gradle
         run: ./gradlew build
 
       - name: Upload Release Asset
-        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./build/libs/wiremock-docker-easy-extensions.jar
-          asset_name: wiremock-docker-easy-extensions.jar
+          upload_url: ${{ inputs.upload_url }}
+          asset_path: ./build/libs/wiremock-extensions-builder.jar
+          asset_name: wiremock-extensions-builder.jar
           asset_content_type: application/java-archive
 
   publish-docker:

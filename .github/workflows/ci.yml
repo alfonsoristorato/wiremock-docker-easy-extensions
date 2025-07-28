@@ -28,6 +28,9 @@ jobs:
     needs: [ call_test, call_codeql_analysis ]
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'release' }}
     uses: ./.github/workflows/publish.yml
+    with:
+      event_name: ${{ github.event_name }}
+      upload_url: ${{ github.event.release.upload_url }}
     permissions:
       contents: write
       packages: write
