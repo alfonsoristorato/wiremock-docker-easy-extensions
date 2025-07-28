@@ -6,9 +6,12 @@ plugins {
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.gradle.ktlint)
     alias(libs.plugins.kover)
+    `maven-publish`
 }
 
 group = "alfonsoristorato"
+//TODO align this version with gh releases
+version = project.findProperty("projectVersion") ?: "1.0.0"
 
 repositories {
     mavenCentral()
@@ -52,6 +55,25 @@ tasks.shadowJar {
         attributes["Main-Class"] = "app.Application"
     }
     mergeServiceFiles()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            artifact(tasks.shadowJar.get())
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/alfonsoristorato/wiremock-docker-easy-extensions")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 kover {
