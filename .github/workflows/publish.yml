@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ inputs.upload_url }}
-          asset_path: ./build/libs
+          asset_path: ./build/libs/wiremock-docker-easy-extensions.jar
           asset_name: wiremock-docker-easy-extensions.jar
           asset_content_type: application/java-archive
 
