@@ -169,7 +169,7 @@ triggering a new build of your extension JAR automatically.
 
 ## How to Use - Standalone JAR (CLI)
 
-For users who prefer to run the tool directly without Docker, the executable JAR is available for download from the
+For users who prefer to run the tool directly without Docker commands (the final result will still be a Docker image that spins up), the executable JAR is available for download from the
 project's [GitHub Releases page](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases).
 
 This method is useful for local testing or for integrating the tool into custom scripts.
