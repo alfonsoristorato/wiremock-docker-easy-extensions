@@ -43,6 +43,7 @@ class Application {
                 if (success) {
                     val projectRoot = File(".").canonicalFile
                     dockerRunner.runWiremockContainer(
+                        config.jarRunConfig,
                         WireMockConfigForRunCommand(config.sourceFilesLocation),
                         OutputConfig,
                         projectRoot,

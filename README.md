@@ -92,6 +92,13 @@ source-files:
 # (Required - can be empty) A list of dependencies required to run the classes.
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0
+
+# (Optional) Used to provide configs for the WireMock Docker image spin up via CLI `run` command.
+jar-run-config:
+   # (Optional) The name of the Docker container that will be created. Defaults to `wiremock-docker-easy-extensions`.
+   docker-container-name: wiremock-docker-easy-extensions
+   # (Optional) The port that Docker will expose for WireMock. Defaults to `8080`.
+   docker-port: 8080
 ```
 
 ### Extension Language and Compatibility
