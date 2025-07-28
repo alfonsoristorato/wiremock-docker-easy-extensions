@@ -144,7 +144,7 @@ class ExtensionBuilder(
 
         wrapperFiles.forEach { path ->
             val targetFile = buildDir.resolve(path)
-            ResourceUtils.copyResourceToFile("/gradle-template/$path", targetFile)
+            ResourceUtils.copyResourceToFile("/$path", targetFile)
             if (path == "gradlew" && !isOsWindows()) {
                 targetFile.setExecutable(true)
             }

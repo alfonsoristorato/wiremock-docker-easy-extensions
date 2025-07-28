@@ -16,7 +16,7 @@ class GradleProjectGenerator {
         gradleDir.mkdirs()
 
         ResourceUtils.copyResourceToFile(
-            "/gradle-template/gradle/libs.versions.toml",
+            "/gradle/libs.versions.toml",
             gradleDir.resolve("libs.versions.toml"),
         )
 
