@@ -1,0 +1,10 @@
+source-files-location: src/main/kotlin
+
+source-files:
+  - File1.kt
+
+dependencies:
+
+jar-run-config:
+  docker-container-name: "my-test-container"
+
