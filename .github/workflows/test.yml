@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      checks: write
-      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -32,10 +30,3 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
-
-      - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            build/test-results/test/TEST-*.xml
