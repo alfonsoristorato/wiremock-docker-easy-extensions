@@ -4,7 +4,6 @@ import config.OutputConfig
 import config.WireMockConfigForRunCommand
 import java.io.File
 
-// TODO most likely this will go away and the app will run on build and Docker Image only
 class DockerRunner {
     /**
      * Runs a WireMock container with the generated extensions.

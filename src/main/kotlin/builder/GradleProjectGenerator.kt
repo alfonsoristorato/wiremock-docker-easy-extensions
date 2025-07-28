@@ -1,7 +1,7 @@
 package builder
 
 import config.Config
-import utils.ResourceUtils
+import utils.Utils
 import java.io.File
 
 class GradleProjectGenerator {
@@ -15,7 +15,7 @@ class GradleProjectGenerator {
         val gradleDir = buildDir.resolve("gradle")
         gradleDir.mkdirs()
 
-        ResourceUtils.copyResourceToFile(
+        Utils.ResourceUtils.copyResourceToFile(
             "/gradle/libs.versions.toml",
             gradleDir.resolve("libs.versions.toml"),
         )

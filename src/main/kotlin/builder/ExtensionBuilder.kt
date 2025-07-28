@@ -2,8 +2,8 @@ package builder
 
 import config.Config
 import config.OutputConfig
-import utils.ResourceUtils
-import utils.Utils.isOsWindows
+import utils.Utils.OsUtils
+import utils.Utils.ResourceUtils
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -105,7 +105,7 @@ class ExtensionBuilder(
         println("⚙️ Compiling extensions and building JAR...")
 
         copyGradleWrapper(buildDir)
-        val gradleCommand = takeIf { isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
+        val gradleCommand = takeIf { OsUtils.isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
             .directory(buildDir)
@@ -145,7 +145,7 @@ class ExtensionBuilder(
         wrapperFiles.forEach { path ->
             val targetFile = buildDir.resolve(path)
             ResourceUtils.copyResourceToFile("/$path", targetFile)
-            if (path == "gradlew" && !isOsWindows()) {
+            if (path == "gradlew" && !OsUtils.isOsWindows()) {
                 targetFile.setExecutable(true)
             }
         }
