@@ -6,6 +6,19 @@
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [How it Works](#how-it-works)
+- [Requirements](#requirements)
+- [How to Use - Docker](#how-to-use---docker)
+- [How to Use - Standalone JAR (CLI)](#how-to-use---standalone-jar-cli)
+- [Local Development](#local-development)
+- [Examples](#examples)
+- [License](#license)
+
+---
+
 ## Overview
 
 **wiremock-docker-easy-extensions** is a toolkit designed to simplify building and running custom extensions with the
