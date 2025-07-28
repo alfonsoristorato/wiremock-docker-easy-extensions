@@ -1,6 +1,7 @@
 package builder
 
 import config.Config
+import utils.ResourceUtils
 import java.io.File
 
 class GradleProjectGenerator {
@@ -10,11 +11,15 @@ class GradleProjectGenerator {
     fun generate(
         buildDir: File,
         config: Config,
-        libsVersionsToml: File,
     ) {
         val gradleDir = buildDir.resolve("gradle")
         gradleDir.mkdirs()
-        libsVersionsToml.copyTo(gradleDir.resolve("libs.versions.toml"))
+
+        ResourceUtils.copyResourceToFile(
+            "/gradle-template/gradle/libs.versions.toml",
+            gradleDir.resolve("libs.versions.toml"),
+        )
+
         buildDir.resolve("settings.gradle.kts").writeText("rootProject.name = \"extensions-builder-temp\"")
 
         val buildFileContent =

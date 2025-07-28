@@ -2,6 +2,7 @@ package builder
 
 import config.Config
 import config.OutputConfig
+import utils.ResourceUtils
 import utils.Utils.isOsWindows
 import java.io.File
 import java.nio.file.Files
@@ -26,8 +27,7 @@ class ExtensionBuilder(
             tempBuildDir.deleteRecursively()
             tempBuildDir.mkdirs()
 
-            val libsVersionsToml = projectRoot.resolve("gradle/libs.versions.toml")
-            gradleGenerator.generate(tempBuildDir, config, libsVersionsToml)
+            gradleGenerator.generate(tempBuildDir, config)
 
             copySourceFilesAndGenerateServiceDiscoveryFiles(
                 projectRoot.toPath(),
@@ -104,7 +104,7 @@ class ExtensionBuilder(
     private fun runGradleBuild(buildDir: File): Boolean {
         println("⚙️ Compiling extensions and building JAR...")
 
-        copyGradleWrapper(File(".").canonicalFile, buildDir)
+        copyGradleWrapper(buildDir)
         val gradleCommand = takeIf { isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
@@ -133,13 +133,7 @@ class ExtensionBuilder(
         Files.move(sourceJar, targetJar, StandardCopyOption.REPLACE_EXISTING)
     }
 
-    private fun copyGradleWrapper(
-        projectRoot: File,
-        buildDir: File,
-    ) {
-        val gradleWrapperDir = buildDir.resolve("gradle/wrapper")
-        gradleWrapperDir.mkdirs()
-
+    private fun copyGradleWrapper(buildDir: File) {
         val wrapperFiles =
             listOf(
                 "gradle/wrapper/gradle-wrapper.jar",
@@ -149,17 +143,10 @@ class ExtensionBuilder(
             )
 
         wrapperFiles.forEach { path ->
-            val sourceFile = projectRoot.resolve(path)
-            if (sourceFile.exists()) {
-                val targetFile = buildDir.resolve(path)
-                targetFile.parentFile.mkdirs()
-                sourceFile.copyTo(targetFile, overwrite = true)
-
-                if (path == "gradlew" && !isOsWindows()) {
-                    targetFile.setExecutable(true)
-                }
-            } else {
-                println("⚠️ Warning: Gradle wrapper file not found: $path")
+            val targetFile = buildDir.resolve(path)
+            ResourceUtils.copyResourceToFile("/gradle-template/$path", targetFile)
+            if (path == "gradlew" && !isOsWindows()) {
+                targetFile.setExecutable(true)
             }
         }
     }

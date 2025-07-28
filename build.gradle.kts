@@ -29,7 +29,7 @@ dependencies {
 }
 
 tasks.build {
-    dependsOn(tasks.ktlintFormat, tasks.shadowJar)
+    dependsOn(tasks.ktlintFormat, "copyGradleRequiredFiles", tasks.shadowJar)
 }
 
 tasks.jar {
@@ -54,6 +54,17 @@ tasks.shadowJar {
         attributes["Main-Class"] = "app.Application"
     }
     mergeServiceFiles()
+}
+
+tasks.register<Copy>("copyGradleRequiredFiles") {
+    destinationDir = file("src/main/resources/gradle-template")
+    from(layout.projectDirectory) {
+        include("gradlew", "gradlew.bat")
+        into("")
+    }
+    from(layout.projectDirectory.dir("gradle")) {
+        into("gradle")
+    }
 }
 
 kover {
