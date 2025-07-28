@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -59,9 +60,8 @@ tasks.shadowJar {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifact(tasks.shadowJar.get())
+        create<MavenPublication>("shadow") {
+            from(components["shadow"])
         }
     }
     repositories {
