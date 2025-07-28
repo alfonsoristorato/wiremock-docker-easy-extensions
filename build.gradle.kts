@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "alfonsoristorato"
-//TODO align this version with gh releases
+// TODO align this version with gh releases
 version = project.findProperty("projectVersion") ?: "1.0.0"
 
 repositories {
