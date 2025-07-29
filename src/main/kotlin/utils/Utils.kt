@@ -19,5 +19,7 @@ object Utils {
                 Files.copy(inputStream, destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
             } ?: throw IllegalStateException("Resource not found: $resourcePath")
         }
+
+        fun resolveSourceSetPath(file: File) = "src/main/kotlin".takeIf { file.extension == "kt" } ?: "src/main/java"
     }
 }

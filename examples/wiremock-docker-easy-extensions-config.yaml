@@ -1,9 +1,9 @@
-source-files-location: examples/example
+source-files-location: ""
 
 source-files:
-  - ResponseTransformerExtensionNoDependenciesJava.java
-  - ResponseTransformerExtensionNoDependenciesKotlin.kt
-  - ResponseTransformerExtensionWithDependenciesKotlin.kt
+  - examples.example.ResponseTransformerExtensionNoDependenciesJava.java
+  - examples.example.ResponseTransformerExtensionNoDependenciesKotlin.kt
+  - examples.example.ResponseTransformerExtensionWithDependenciesKotlin.kt
 
 dependencies:
   - org.apache.commons:commons-lang3:3.18.0

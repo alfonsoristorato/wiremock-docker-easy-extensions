@@ -29,19 +29,7 @@ class GradleProjectGenerator {
                 kotlin("jvm") version libs.versions.kotlin
                 alias(libs.plugins.shadow.jar)
             }
-            sourceSets {
-                main {
-                    java {
-                        srcDirs("${config.sourceFilesLocation}")
-                    }
-                    kotlin {
-                        srcDirs("${config.sourceFilesLocation}")
-                    }
-                    resources {
-                        srcDirs("${config.sourceFilesLocation}/resources")
-                    }
-                }
-            }
+
             java.sourceCompatibility = JavaVersion.VERSION_11
             java.targetCompatibility = JavaVersion.VERSION_11
             kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_11

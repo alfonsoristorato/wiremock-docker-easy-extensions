@@ -4,6 +4,7 @@ import config.Config
 import config.OutputConfig
 import utils.Utils.OsUtils
 import utils.Utils.ResourceUtils
+import utils.Utils.ResourceUtils.resolveSourceSetPath
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -65,30 +66,31 @@ class ExtensionBuilder(
     ) {
         val fileNames = mutableListOf<String>()
         sources.forEach { file ->
-            "$sourceFilesLocation/$file"
-                .let { sourcePath ->
-                    projectRoot
-                        .resolve(sourcePath)
-                        .takeIf {
-                            Files.exists(it)
-                        }?.let {
-                            val destination = buildDir.resolve(sourcePath)
-                            destination.parent.createDirectories()
-                            Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
-                            fileNames.add(sourcePath)
-                        } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
-                }
+
+            val fqn = file.substringBeforeLast('.')
+            val packageAsPath = fqn.substringBeforeLast('.').replace('.', '/')
+            val fileName = file.substringAfterLast(fqn.substringBeforeLast('.') + ".")
+
+            val sourcePath = Path.of(sourceFilesLocation, fileName)
+
+            projectRoot
+                .resolve(sourcePath)
+                .takeIf {
+                    Files.exists(it)
+                }?.let {
+                    val destination = buildDir.resolve("${resolveSourceSetPath(it.toFile())}/$packageAsPath/$fileName")
+                    destination.parent.createDirectories()
+                    Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
+                    fileNames.add(fqn)
+                } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
         }
 
         takeIf { fileNames.isNotEmpty() }
             ?.let {
-                val servicesDir = buildDir.resolve("$sourceFilesLocation/resources/META-INF/services")
+                val servicesDir = buildDir.resolve("src/main/resources/META-INF/services")
                 servicesDir.createDirectories()
                 val serviceLoaderFile = servicesDir.resolve("com.github.tomakehurst.wiremock.extension.Extension")
-                val serviceLoaderContent =
-                    fileNames.joinToString("\n") { fileName ->
-                        fileName.substringBeforeLast('.').replace('/', '.')
-                    }
+                val serviceLoaderContent = fileNames.joinToString("\n")
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
                 println("✅ Created Service Loader for WireMock to discover extensions.")
             }
