@@ -1,15 +1,12 @@
 package app
 
 import builder.ExtensionBuilder
-import config.ConfigLoader
-import config.OutputConfig
-import config.WireMockConfigForRunCommand
+import config.ConfigReader
 import docker.DockerRunner
-import java.io.File
 import kotlin.system.exitProcess
 
 class Application {
-    private val configLoader = ConfigLoader()
+    private val configReader = ConfigReader()
     private val extensionBuilder = ExtensionBuilder()
     private val dockerRunner = DockerRunner()
 
@@ -29,25 +26,19 @@ class Application {
             return
         }
         val configFile = args[1]
-        val config = configLoader.loadConfig(configFile)
+        configReader.readConfigAndInitializeContext(configFile)
 
         when (command) {
             "build" -> {
-                val success = extensionBuilder.build(config)
+                val success = extensionBuilder.build()
                 if (!success) {
                     exitProcess(1)
                 }
             }
             "run" -> {
-                val success = extensionBuilder.build(config)
+                val success = extensionBuilder.build()
                 if (success) {
-                    val projectRoot = File(".").canonicalFile
-                    dockerRunner.runWiremockContainer(
-                        config.jarRunConfig,
-                        WireMockConfigForRunCommand(config.sourceFilesLocation),
-                        OutputConfig,
-                        projectRoot,
-                    )
+                    dockerRunner.runWiremockContainer()
                 } else {
                     exitProcess(1)
                 }
