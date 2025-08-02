@@ -2,6 +2,7 @@ package wdee.builder
 
 import wdee.config.ContextHolder
 import wdee.utils.Utils.OsUtils
+import wdee.utils.Utils.PrintUtils
 import wdee.utils.Utils.ResourceUtils
 import java.io.File
 import java.nio.file.Files
@@ -33,10 +34,16 @@ class ExtensionBuilder(
                 return@runCatching false
             }
             moveFinalJar(tempBuildDir.toPath())
-            println("✅ Success! Extension JAR created at: ${ContextHolder.OutputConfig.DIR}/${ContextHolder.OutputConfig.JAR_NAME}")
+            PrintUtils.printlnWithIcon(
+                icon = PrintUtils.Icon.GREEN_CHECK,
+                message = "Success! Extension JAR created at: ${ContextHolder.OutputConfig.DIR}/${ContextHolder.OutputConfig.JAR_NAME}",
+            )
             true
         }.onFailure {
-            println("❌ Error building extensions: ${it.message}")
+            PrintUtils.printlnWithIcon(
+                icon = PrintUtils.Icon.ERROR,
+                message = "Error building extensions: ${it.message}",
+            )
             false
         }.also {
             tempBuildDir.deleteRecursively()
@@ -71,8 +78,14 @@ class ExtensionBuilder(
                     destination.parent.createDirectories()
                     Files.copy(originalFile, destination, StandardCopyOption.REPLACE_EXISTING)
                     fileNames.add(fqn)
-                    println("✅ Copied source file: $sourcePath")
-                } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
+                    PrintUtils.printlnWithIcon(
+                        icon = PrintUtils.Icon.GREEN_CHECK,
+                        message = "Copied source file: $sourcePath",
+                    )
+                } ?: PrintUtils.printlnWithIcon(
+                icon = PrintUtils.Icon.WARNING,
+                message = "Source file not found and will be skipped: $sourcePath",
+            )
         }
 
         takeIf { fileNames.isNotEmpty() }
@@ -82,9 +95,15 @@ class ExtensionBuilder(
                 val serviceLoaderFile = servicesDir.resolve(ContextHolder.WireMockConfig.WIREMOCK_SERVICE_LOADER_FILE)
                 val serviceLoaderContent = fileNames.joinToString("\n")
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
-                println("✅ Created Service Loader for WireMock to discover extensions.")
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.GREEN_CHECK,
+                    message = "Created Service Loader for WireMock to discover extensions",
+                )
             }
-            ?: println("⚠️ No extension classes provided, skipping service discovery file generation.")
+            ?: PrintUtils.printlnWithIcon(
+                icon = PrintUtils.Icon.WARNING,
+                message = "No extension classes provided, skipping service discovery file generation",
+            )
     }
 
     /**
@@ -94,7 +113,10 @@ class ExtensionBuilder(
      * @return true if the build was successful, false otherwise
      */
     private fun runGradleBuild(buildDir: File): Boolean {
-        println("⚙️ Compiling extensions and building JAR...")
+        PrintUtils.printlnWithIcon(
+            icon = PrintUtils.Icon.COG,
+            message = "Compiling extensions and building JAR...",
+        )
 
         copyGradleWrapper(buildDir)
         val gradleCommand = "gradlew.bat".takeIf { OsUtils.isOsWindows() } ?: "./gradlew"

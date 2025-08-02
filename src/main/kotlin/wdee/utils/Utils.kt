@@ -22,4 +22,25 @@ object Utils {
 
         fun resolveSourceSetPath(file: File) = "src/main/kotlin".takeIf { file.extension == "kt" } ?: "src/main/java"
     }
+
+    object PrintUtils {
+        enum class Icon(
+            val icon: String,
+        ) {
+            PAGE("📄 "),
+            ERROR("❌ "),
+            WARNING("⚠️ "),
+            RED_DOT("🔴 "),
+            GREEN_CHECK("✅ "),
+            COG("⚙️ "),
+            ROCKET("🚀 "),
+        }
+
+        fun printlnWithIcon(
+            icon: Icon,
+            message: String,
+        ) {
+            println("${icon.icon} $message")
+        }
+    }
 }

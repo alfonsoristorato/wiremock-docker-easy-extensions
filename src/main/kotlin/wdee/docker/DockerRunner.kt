@@ -1,13 +1,17 @@
 package wdee.docker
 
 import wdee.config.ContextHolder
+import wdee.utils.Utils.PrintUtils
 
 class DockerRunner {
     /**
      * Runs a WireMock container with the generated extensions using the provided configuration.
      */
     fun runWiremockContainer() {
-        println("\n🚀 Starting WireMock container '${ContextHolder.JarRunConfig.dockerContainerName}'...")
+        PrintUtils.printlnWithIcon(
+            icon = PrintUtils.Icon.ROCKET,
+            message = "Starting WireMock container '${ContextHolder.JarRunConfig.dockerContainerName}'...",
+        )
 
         val dockerMappingsPath =
             ContextHolder.projectRoot.resolve(ContextHolder.JarRunConfig.wiremockMappingsPath).absolutePath
@@ -38,7 +42,10 @@ class DockerRunner {
 
         Runtime.getRuntime().addShutdownHook(
             Thread {
-                println("\n🛑 Stopping WireMock container...")
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.RED_DOT,
+                    message = "Shutdown hook triggered. Stopping WireMock container...",
+                )
                 try {
                     ProcessBuilder("docker", "stop", ContextHolder.JarRunConfig.dockerContainerName).start().waitFor()
                 } catch (e: Exception) {

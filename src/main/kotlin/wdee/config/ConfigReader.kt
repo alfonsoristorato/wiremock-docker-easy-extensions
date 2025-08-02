@@ -2,6 +2,7 @@ package wdee.config
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
+import wdee.utils.Utils.PrintUtils
 import java.io.File
 
 class ConfigReader {
@@ -14,20 +15,29 @@ class ConfigReader {
             .takeIf {
                 it.exists()
             }?.let { configFile ->
-                println("📄 Loading configuration from $configFilePath")
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.PAGE,
+                    message = "Loading configuration from $configFilePath",
+                )
                 runCatching {
                     ContextHolder.init(
                         config = Yaml().decodeFromStream(Config.serializer(), configFile.inputStream()),
                         configFile = configFile,
                     )
                 }.onFailure {
-                    println("❌ Error loading configuration: ${it.message}")
+                    PrintUtils.printlnWithIcon(
+                        icon = PrintUtils.Icon.ERROR,
+                        message = "Error loading configuration: ${it.message}",
+                    )
                     it.printStackTrace()
                     throw RuntimeException("Error loading configuration: ${it.message}", it)
                 }.getOrThrow()
             }
             ?: run {
-                println("⚠️ Configuration file not found: $configFilePath")
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.WARNING,
+                    message = "Configuration file not found: $configFilePath",
+                )
                 throw RuntimeException("Configuration file not found: $configFilePath")
             }
 }
