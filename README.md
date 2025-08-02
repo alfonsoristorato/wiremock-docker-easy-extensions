@@ -151,7 +151,7 @@ For the example above, where the root directory is `aDirectory`, you would mount
 ```sh
 docker run -p 8080:8080 \
   -v ./aDirectory:/home/config/aDirectory \
-  ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:<version>
+  ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:latest
 ```
 
 #### Docker Compose
@@ -159,7 +159,7 @@ docker run -p 8080:8080 \
 ```yaml
 services:
   wiremock-docker-easy-extensions:
-    image: ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:<version>
+    image: ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:latest
     container_name: wiremock-with-runtime-extensions
     ports:
       - "8080:8080"
@@ -192,13 +192,15 @@ This method is useful for local testing or for integrating the tool into custom 
 ### Usage
 
 1. **Download the JAR:**
-   Use `curl` to download the JAR from the latest release. Replace `<version>` with the desired release tag.
+   Use `curl` to download the JAR from the latest release.
 
     ```sh
-    # Replace <version> with a specific release tag from the releases page
-    VERSION="<version>"
-    curl -L -o wiremock-docker-easy-extensions.jar \
-      "https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/download/${VERSION}/wiremock-docker-easy-extensions.jar"
+    REPO_NAME="alfonsoristorato/wiremock-docker-easy-extensions" 
+    JAR_NAME="wiremock-docker-easy-extensions.jar"
+    
+    LATEST_VERSION=$(curl -s https://api.github.com/repos/$REPO_NAME/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    JAR_URL="https://github.com/$REPO_NAME/releases/download/${LATEST_VERSION}/${JAR_NAME}"
+    curl -L -o $JAR_NAME $JAR_URL
     ```
 
 2. **Run the tool:**
