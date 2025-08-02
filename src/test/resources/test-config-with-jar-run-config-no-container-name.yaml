@@ -7,4 +7,7 @@ dependencies:
 
 jar-run-config:
   docker-port: 9090
+  wiremock-cl-options:
+    - --verbose
+    - --record-mappings
 

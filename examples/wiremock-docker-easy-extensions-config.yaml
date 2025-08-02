@@ -1,4 +1,4 @@
-source-files-location: "extensions"
+source-files-location: extensions
 
 source-files:
   - wdee.examples.ResponseTransformerExtensionNoDependenciesJava.java
@@ -11,3 +11,5 @@ dependencies:
 jar-run-config:
   docker-port: 8080
   docker-container-name: wiremock-docker-easy-extensions
+  wiremock-cl-options:
+    - --verbose

@@ -100,6 +100,10 @@ jar-run-config:
   docker-container-name: wiremock-docker-easy-extensions
   # (Optional) The port that Docker will expose for WireMock. Defaults to `8080`.
   docker-port: 8080
+  # (Optional - can be empty) List of WireMock CL Commands (need to be valid WireMock CL Commands). Defaults to an empty list.
+  wiremock-cl-options:
+    - --verbose
+    - --record-mappings
 ```
 
 ### Extension Language and Compatibility

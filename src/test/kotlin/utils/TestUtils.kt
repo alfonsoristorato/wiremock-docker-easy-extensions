@@ -5,6 +5,7 @@ import java.nio.file.Paths
 object TestUtils {
     const val DEFAULT_DOCKER_PORT: String = "8080"
     const val DEFAULT_DOCKER_CONTAINER_NAME: String = "wiremock-docker-easy-extensions"
+    val DEFAULT_WIREMOCK_CL_OPTIONS: List<String> = emptyList()
 
     fun getConfigFileFromResources(fileName: String) =
         javaClass.classLoader

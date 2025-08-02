@@ -34,8 +34,7 @@ class DockerRunner {
                 "-v",
                 "$extensionsJarPath:/var/wiremock/extensions/",
                 "wiremock/wiremock:3.13.1",
-                "--verbose",
-            )
+            ) + ContextHolder.JarRunConfig.wiremockClOptions
 
         Runtime.getRuntime().addShutdownHook(
             Thread {
