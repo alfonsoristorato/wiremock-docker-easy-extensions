@@ -1,26 +1,26 @@
 package builder
 
-import config.Config
+import config.ContextHolder
 import utils.Utils
 import java.io.File
 
 class GradleProjectGenerator {
     /**
      * Generates a temporary Gradle project for compiling a JAR.
+     * @param buildDir The directory where the Gradle project will be created.
      */
-    fun generate(
-        buildDir: File,
-        config: Config,
-    ) {
-        val gradleDir = buildDir.resolve("gradle")
+    fun generate(buildDir: File) {
+        val gradleDir = buildDir.resolve(ContextHolder.GradleConfig.GRADLE_DIR)
         gradleDir.mkdirs()
 
         Utils.ResourceUtils.copyResourceToFile(
-            "/gradle/libs.versions.toml",
-            gradleDir.resolve("libs.versions.toml"),
+            "/${ContextHolder.GradleConfig.GRADLE_DIR}/${ContextHolder.GradleConfig.LIBS_FILE_NAME}",
+            gradleDir.resolve(ContextHolder.GradleConfig.LIBS_FILE_NAME),
         )
 
-        buildDir.resolve("settings.gradle.kts").writeText("rootProject.name = \"extensions-builder-temp\"")
+        buildDir
+            .resolve(ContextHolder.GradleConfig.SETTINGS_GRADLE_FILE_NAME)
+            .writeText("rootProject.name = \"extensions-builder-temp\"")
 
         val buildFileContent =
             """
@@ -37,7 +37,7 @@ class GradleProjectGenerator {
 
             dependencies {
                 implementation(libs.wiremock)
-                ${config.dependencies?.joinToString("\n                ") { "implementation(\"$it\")" }}
+                ${ContextHolder.SourceFilesConfig.dependencies.joinToString("\n                ") { "implementation(\"$it\")" }}
             }
             
             tasks.jar {
@@ -52,6 +52,6 @@ class GradleProjectGenerator {
             }
             """.trimIndent()
 
-        buildDir.resolve("build.gradle.kts").writeText(buildFileContent)
+        buildDir.resolve(ContextHolder.GradleConfig.BUILD_GRADLE_FILE_NAME).writeText(buildFileContent)
     }
 }

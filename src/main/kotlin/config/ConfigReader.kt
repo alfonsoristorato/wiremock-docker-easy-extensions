@@ -4,18 +4,22 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import java.io.File
 
-class ConfigLoader {
+class ConfigReader {
     /**
-     * Loads the configuration from YAML file provided in the specified path.
+     * Reads the configuration from YAML file provided in the specified path and initializes the context.
+     * @param configFilePath The path to the configuration file.
      */
-    fun loadConfig(configFilePath: String): Config =
+    fun readConfigAndInitializeContext(configFilePath: String): Unit =
         File(configFilePath)
             .takeIf {
                 it.exists()
             }?.let { configFile ->
                 println("📄 Loading configuration from $configFilePath")
                 runCatching {
-                    Yaml().decodeFromStream(Config.serializer(), configFile.inputStream())
+                    ContextHolder.init(
+                        config = Yaml().decodeFromStream(Config.serializer(), configFile.inputStream()),
+                        configFile = configFile,
+                    )
                 }.onFailure {
                     println("❌ Error loading configuration: ${it.message}")
                     it.printStackTrace()

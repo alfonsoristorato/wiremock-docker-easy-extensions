@@ -1,4 +1,4 @@
-package examples.example;
+package wdee.examples;
 
 import com.github.tomakehurst.wiremock.extension.ResponseTransformerV2;
 import com.github.tomakehurst.wiremock.http.Response;

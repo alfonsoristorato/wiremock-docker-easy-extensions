@@ -1,27 +1,21 @@
 package docker
 
-import config.JarRunConfig
-import config.OutputConfig
-import config.WireMockConfigForRunCommand
-import java.io.File
+import config.ContextHolder
 
 class DockerRunner {
     /**
-     * Runs a WireMock container with the generated extensions.
+     * Runs a WireMock container with the generated extensions using the provided configuration.
      */
-    fun runWiremockContainer(
-        jarRunConfig: JarRunConfig,
-        wireMockConfigForRunCommand: WireMockConfigForRunCommand,
-        outputConfig: OutputConfig,
-        projectRoot: File,
-    ) {
-        println("\n🚀 Starting WireMock container '$jarRunConfig.dockerContainerName'...")
+    fun runWiremockContainer() {
+        println("\n🚀 Starting WireMock container '${ContextHolder.JarRunConfig.dockerContainerName}'...")
 
-        val dockerMappingsPath = projectRoot.resolve(wireMockConfigForRunCommand.mappingsDir).absolutePath
-        val dockerFilesPath = projectRoot.resolve(wireMockConfigForRunCommand.filesDir).absolutePath
+        val dockerMappingsPath =
+            ContextHolder.projectRoot.resolve(ContextHolder.JarRunConfig.wiremockMappingsPath).absolutePath
+        val dockerFilesPath =
+            ContextHolder.projectRoot.resolve(ContextHolder.JarRunConfig.wiremockFilesPath).absolutePath
         val extensionsJarPath =
-            projectRoot
-                .resolve(outputConfig.DIR)
+            ContextHolder.projectRoot
+                .resolve(ContextHolder.OutputConfig.DIR)
                 .absolutePath
 
         val command =
@@ -30,9 +24,9 @@ class DockerRunner {
                 "run",
                 "--rm",
                 "--name",
-                jarRunConfig.dockerContainerName,
+                ContextHolder.JarRunConfig.dockerContainerName,
                 "-p",
-                "${jarRunConfig.dockerPort}:8080",
+                "${ContextHolder.JarRunConfig.dockerPort}:8080",
                 "-v",
                 "$dockerMappingsPath:/home/wiremock/mappings",
                 "-v",
@@ -47,7 +41,7 @@ class DockerRunner {
             Thread {
                 println("\n🛑 Stopping WireMock container...")
                 try {
-                    ProcessBuilder("docker", "stop", jarRunConfig.dockerContainerName).start().waitFor()
+                    ProcessBuilder("docker", "stop", ContextHolder.JarRunConfig.dockerContainerName).start().waitFor()
                 } catch (e: Exception) {
                     System.err.println("Failed to stop container: ${e.message}")
                 }
@@ -57,7 +51,7 @@ class DockerRunner {
         try {
             val process =
                 ProcessBuilder(command)
-                    .directory(projectRoot)
+                    .directory(ContextHolder.projectRoot)
                     .inheritIO()
                     .start()
 

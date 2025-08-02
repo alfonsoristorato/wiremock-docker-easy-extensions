@@ -16,21 +16,3 @@ data class JarRunConfig(
     @SerialName("docker-container-name") val dockerContainerName: String = "wiremock-docker-easy-extensions",
     @SerialName("docker-port")val dockerPort: Int = 8080,
 )
-
-@ConsistentCopyVisibility
-data class WireMockConfigForRunCommand private constructor(
-    private val sourceFilesLocation: String,
-    val mappingsDir: String,
-    val filesDir: String,
-) {
-    constructor(sourceFilesLocation: String) : this(
-        sourceFilesLocation,
-        "${sourceFilesLocation.substringBefore("/")}/mappings",
-        "${sourceFilesLocation.substringBefore("/")}/__files",
-    )
-}
-
-object OutputConfig {
-    const val DIR: String = "build/extensions"
-    const val JAR_NAME: String = "wiremock-extensions-bundled.jar"
-}

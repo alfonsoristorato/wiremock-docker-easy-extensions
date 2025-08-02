@@ -19,4 +19,3 @@ build/
 ### Local dev ###
 /local-dev
 .extensions-builder
-src/main/resources/gradle-template*

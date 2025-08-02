@@ -1,10 +1,8 @@
 package builder
 
-import config.Config
-import config.OutputConfig
+import config.ContextHolder
 import utils.Utils.OsUtils
 import utils.Utils.ResourceUtils
-import utils.Utils.ResourceUtils.resolveSourceSetPath
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,30 +15,25 @@ class ExtensionBuilder(
     /**
      * Builds JAR containing the extension classes, their Service Loader and dependencies according to the provided configuration.
      *
-     * @param config The configuration that specifies extensions and output.
      * @return true if the build was successful, false otherwise
      */
-    fun build(config: Config): Boolean {
-        val projectRoot = File(".").canonicalFile
-        val tempBuildDir = projectRoot.resolve(".extensions-builder")
+    fun build(): Boolean {
+        val tempBuildDir = ContextHolder.projectRoot.resolve(".extensions-builder")
 
         return runCatching {
             tempBuildDir.deleteRecursively()
             tempBuildDir.mkdirs()
 
-            gradleGenerator.generate(tempBuildDir, config)
+            gradleGenerator.generate(tempBuildDir)
 
             copySourceFilesAndGenerateServiceDiscoveryFiles(
-                projectRoot.toPath(),
                 tempBuildDir.toPath(),
-                config.sourceFiles,
-                config.sourceFilesLocation,
             )
             if (!runGradleBuild(tempBuildDir)) {
                 return@runCatching false
             }
-            moveFinalJar(tempBuildDir.toPath(), projectRoot.toPath(), OutputConfig)
-            println("✅ Success! Extension JAR created at: ${OutputConfig.DIR}/${OutputConfig.JAR_NAME}")
+            moveFinalJar(tempBuildDir.toPath())
+            println("✅ Success! Extension JAR created at: ${ContextHolder.OutputConfig.DIR}/${ContextHolder.OutputConfig.JAR_NAME}")
             true
         }.onFailure {
             println("❌ Error building extensions: ${it.message}")
@@ -53,43 +46,40 @@ class ExtensionBuilder(
     /**
      * Copies source files and generates the Service Loader file for WireMock extensions.
      *
-     * @param projectRoot The root directory of the project.
      * @param buildDir The directory where the build will be performed.
-     * @param sources List of source files to copy.
-     * @param sourceFilesLocation Location of the files. it will be the final package too.
      */
-    private fun copySourceFilesAndGenerateServiceDiscoveryFiles(
-        projectRoot: Path,
-        buildDir: Path,
-        sources: List<String>,
-        sourceFilesLocation: String,
-    ) {
+    private fun copySourceFilesAndGenerateServiceDiscoveryFiles(buildDir: Path) {
         val fileNames = mutableListOf<String>()
-        sources.forEach { file ->
+        ContextHolder.SourceFilesConfig.sourceFiles.forEach { file ->
 
             val fqn = file.substringBeforeLast('.')
             val packageAsPath = fqn.substringBeforeLast('.').replace('.', '/')
             val fileName = file.substringAfterLast(fqn.substringBeforeLast('.') + ".")
 
-            val sourcePath = Path.of(sourceFilesLocation, fileName)
+            val sourcePath = Path.of(ContextHolder.SourceFilesConfig.sourceFilesLocation, fileName)
 
-            projectRoot
+            ContextHolder.projectRoot
+                .toPath()
                 .resolve(sourcePath)
                 .takeIf {
                     Files.exists(it)
-                }?.let {
-                    val destination = buildDir.resolve("${resolveSourceSetPath(it.toFile())}/$packageAsPath/$fileName")
+                }?.let { originalFile ->
+                    val destination =
+                        buildDir.resolve(
+                            "${ResourceUtils.resolveSourceSetPath(originalFile.toFile())}/$packageAsPath/$fileName",
+                        )
                     destination.parent.createDirectories()
-                    Files.copy(it, destination, StandardCopyOption.REPLACE_EXISTING)
+                    Files.copy(originalFile, destination, StandardCopyOption.REPLACE_EXISTING)
                     fileNames.add(fqn)
+                    println("✅ Copied source file: $sourcePath")
                 } ?: println("⚠️ Warning: Source file not found and will be skipped: $sourcePath")
         }
 
         takeIf { fileNames.isNotEmpty() }
             ?.let {
-                val servicesDir = buildDir.resolve("src/main/resources/META-INF/services")
+                val servicesDir = buildDir.resolve(ContextHolder.WireMockConfig.META_INF_DIR)
                 servicesDir.createDirectories()
-                val serviceLoaderFile = servicesDir.resolve("com.github.tomakehurst.wiremock.extension.Extension")
+                val serviceLoaderFile = servicesDir.resolve(ContextHolder.WireMockConfig.WIREMOCK_SERVICE_LOADER_FILE)
                 val serviceLoaderContent = fileNames.joinToString("\n")
                 Files.write(serviceLoaderFile, serviceLoaderContent.toByteArray())
                 println("✅ Created Service Loader for WireMock to discover extensions.")
@@ -107,7 +97,7 @@ class ExtensionBuilder(
         println("⚙️ Compiling extensions and building JAR...")
 
         copyGradleWrapper(buildDir)
-        val gradleCommand = takeIf { OsUtils.isOsWindows() }?.let { "gradlew.bat" } ?: "./gradlew"
+        val gradleCommand = "gradlew.bat".takeIf { OsUtils.isOsWindows() } ?: "./gradlew"
 
         return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
             .directory(buildDir)
@@ -120,31 +110,17 @@ class ExtensionBuilder(
      * Moves the final JAR file to the specified output directory.
      *
      * @param buildDir The directory where the JAR was built.
-     * @param projectRoot The root directory of the project.
-     * @param outputConfig The output configuration specifying the target directory and JAR name.
      */
-    private fun moveFinalJar(
-        buildDir: Path,
-        projectRoot: Path,
-        outputConfig: OutputConfig,
-    ) {
-        val sourceJar = buildDir.resolve("build/libs/extensions-bundled.jar")
-        val targetDir = projectRoot.resolve(outputConfig.DIR)
+    private fun moveFinalJar(buildDir: Path) {
+        val sourceJar = buildDir.resolve(ContextHolder.OutputConfig.TEMP_JAR_DIR)
+        val targetDir = ContextHolder.projectRoot.toPath().resolve(ContextHolder.OutputConfig.DIR)
         targetDir.createDirectories()
-        val targetJar = targetDir.resolve(outputConfig.JAR_NAME)
+        val targetJar = targetDir.resolve(ContextHolder.OutputConfig.JAR_NAME)
         Files.move(sourceJar, targetJar, StandardCopyOption.REPLACE_EXISTING)
     }
 
     private fun copyGradleWrapper(buildDir: File) {
-        val wrapperFiles =
-            listOf(
-                "gradle/wrapper/gradle-wrapper.jar",
-                "gradle/wrapper/gradle-wrapper.properties",
-                "gradlew",
-                "gradlew.bat",
-            )
-
-        wrapperFiles.forEach { path ->
+        ContextHolder.GradleConfig.WRAPPER_FILES.forEach { path ->
             val targetFile = buildDir.resolve(path)
             ResourceUtils.copyResourceToFile("/$path", targetFile)
             if (path == "gradlew" && !OsUtils.isOsWindows()) {

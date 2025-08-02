@@ -63,14 +63,14 @@ The tool follows these steps:
 
 ### Directory Structure
 
-In order to use this tool, there will need to be a directory (representing the top-level package of your extensions)with
+In order to use this tool, there will need to be a directory with
 the following structure:
 
 ```
-rootPackage/
+aDirectory/
 ├── __files/                                        # (Required) Directory for WireMock `__files` files.
 │   └── response.json                               # (Optional) If provided, it will be copied to the WireMock container's `__files` directory
-├── subPackage/                                     # Contains extension source code. Classes can also be in the root.
+├── extensions/                                     # Contains extension source code. Classes can also be in the parent directory.
 │   ├── AJavaClass.java
 │   └── AKotlinClass.kt
 ├── mappings/                                       # (Required) Directory for WireMock `mappings` files.
@@ -81,13 +81,14 @@ rootPackage/
 ### `wiremock-docker-easy-extensions-config.yaml` Structure (following the directory structure above)
 
 ```yaml
-# (Required) The location of the classes - the builder will always be at the same level of your root package dir in the Docker image.
-source-files-location: rootPackage/subPackage
+# (Required) The location of the extension classes relative to the parent directory where `wiremock-docker-easy-extensions-config.yaml` is located. 
+# If the classes are in the same directory as `wiremock-docker-easy-extensions-config.yaml`, this can be set to "", ".", "/", "./" according to preference.
+source-files-location: extensions
 
-# (Required - cannot be empty) A list of classes' names with their extension.
+# (Required - cannot be empty) A list of fully qualified class names of the extensions to be included in the JAR.
 source-files:
-  - AJavaClass.java
-  - AKotlinClass.kt
+  - your.package.package1.AJavaClass.java
+  - your.package.package2.AKotlinClass.kt
 
 # (Required - can be empty) A list of dependencies required to run the classes.
 dependencies:
@@ -95,10 +96,10 @@ dependencies:
 
 # (Optional) Used to provide configs for the WireMock Docker image spin up via CLI `run` command.
 jar-run-config:
-   # (Optional) The name of the Docker container that will be created. Defaults to `wiremock-docker-easy-extensions`.
-   docker-container-name: wiremock-docker-easy-extensions
-   # (Optional) The port that Docker will expose for WireMock. Defaults to `8080`.
-   docker-port: 8080
+  # (Optional) The name of the Docker container that will be created. Defaults to `wiremock-docker-easy-extensions`.
+  docker-container-name: wiremock-docker-easy-extensions
+  # (Optional) The port that Docker will expose for WireMock. Defaults to `8080`.
+  docker-port: 8080
 ```
 
 ### Extension Language and Compatibility
@@ -139,13 +140,13 @@ The following tags are available:
 The Docker image is designed to read the directory structure from a mounted local directory. This directory must be
 mounted into `/home/config/(name-of-your-root-directory)` inside the container.
 
-For the example above, where the root directory is `rootPackage`, you would mount it to `/home/config/rootPackage`.
+For the example above, where the root directory is `aDirectory`, you would mount it to `/home/config/aDirectory`.
 
 #### Docker Run
 
 ```sh
 docker run -p 8080:8080 \
-  -v ./rootPackage:/home/config/rootPackage \
+  -v ./aDirectory:/home/config/aDirectory \
   ghcr.io/alfonsoristorato/wiremock-docker-easy-extensions:<version>
 ```
 
@@ -159,17 +160,27 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./rootPackage:/home/config/rootPackage
+      - ./aDirectory:/home/config/aDirectory
 ```
 
 With this setup, any changes to your local source files will be picked up the next time the container is restarted,
 triggering a new build of your extension JAR automatically.
 
+### Notes
+
+1. Because the tool needs both jdk and gradle, which are not available in the official WireMock Docker image,
+   they are bundled together in this image, making it larger than the official WireMock image, but this setup allows
+   for a faster startup as all dependencies to run the tool are already included.
+2. Because this tool builds the extensions JAR at runtime, to then feed to WireMock, it will take about 30 seconds to
+   start every time you run the Docker image. This is because it needs to compile the source files and package them into
+   a JAR.
+
 ---
 
 ## How to Use - Standalone JAR (CLI)
 
-For users who prefer to run the tool directly without Docker commands (the final result will still be a Docker image that spins up), the executable JAR is available for download from the
+For users who prefer to run the tool directly without Docker commands (the final result will still be a Docker image
+that spins up), the executable JAR is available for download from the
 project's [GitHub Releases page](https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases).
 
 This method is useful for local testing or for integrating the tool into custom scripts.
@@ -186,39 +197,17 @@ This method is useful for local testing or for integrating the tool into custom 
       "https://github.com/alfonsoristorato/wiremock-docker-easy-extensions/releases/download/${VERSION}/wiremock-docker-easy-extensions.jar"
     ```
 
-2. **Location of command execution:**
-   There is one limitation to this, the JAR can be placed pretty much anywhere, but it needs to be called from one level
-   above the directory of config.
-   This is a limitation due to how the tool will eventually create the ServiceLoader resources, and it seemed a good
-   compromise.
-   For the example above, where the root directory of the files is `rootPackage`, we will place the JAR in the same
-   directory as `rootPackage`, so the structure will look like:
-    ```
-    aDirectory/
-    ├── rootPackage/
-    │   ├── __files/
-    │   │   └── response.json
-    │   ├── subPackage/
-    │   │   ├── AJavaClass.java
-    │   │   └── AKotlinClass.kt
-    │   ├── mappings/
-    │   │   └── requests.json
-    │   └── wiremock-docker-easy-extensions-config.yaml
-    └── wiremock-docker-easy-extensions.jar 
-    ```
-
-3. **Run the tool:**
+2. **Run the tool:**
    Once downloaded, you can execute it using `java -jar`. The tool provides two main commands: `build` and `run`.
-   Following the example above, you would run the tool from the directory `aDirectory`:
 
     ```sh
     # Build the extension JAR without starting WireMock
-    java -jar wiremock-docker-easy-extensions.jar build rootPackage/wiremock-docker-easy-extensions-config.yaml
+    java -jar wiremock-docker-easy-extensions.jar build aDirectory/wiremock-docker-easy-extensions-config.yaml
     ```
 
     ```sh
     # Build the JAR and immediately run WireMock in a Docker container
-    java -jar wiremock-docker-easy-extensions.jar run rootPackage/wiremock-docker-easy-extensions-config.yaml
+    java -jar wiremock-docker-easy-extensions.jar run aDirectory/wiremock-docker-easy-extensions-config.yaml
     ```
 
 ---
@@ -272,7 +261,7 @@ demonstrates how to use this tool.
 
 ### Included Extensions
 
-There are three example extensions in `examples/example`:
+There are three example extensions in `examples/extensions`:
 
 - `ResponseTransformerExtensionNoDependenciesJava.java`: A simple transformer in Java.
 - `ResponseTransformerExtensionNoDependenciesKotlin.kt`: A simple transformer in Kotlin.
@@ -283,7 +272,7 @@ There are three example extensions in `examples/example`:
 
 The example config file is set up to:
 
-- Read the source files from the `examples/example` directory.
+- Read the source files from the `extensions` directory.
 - Include the `commons-lang3` dependency.
 
 ### Mappings
