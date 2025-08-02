@@ -1,11 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WDEE-run" type="JetRunConfigurationType">
-    <option name="MAIN_CLASS_NAME" value="app.Application" />
+    <option name="MAIN_CLASS_NAME" value="wdee.WireMockDockerEasyExtensions" />
     <module name="wiremock-docker-easy-extensions.main" />
     <option name="PROGRAM_PARAMETERS" value="run ./examples/wiremock-docker-easy-extensions-config.yaml" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="processResources" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

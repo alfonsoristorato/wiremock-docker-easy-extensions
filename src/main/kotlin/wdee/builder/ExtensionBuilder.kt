@@ -1,8 +1,8 @@
-package builder
+package wdee.builder
 
-import config.ContextHolder
-import utils.Utils.OsUtils
-import utils.Utils.ResourceUtils
+import wdee.config.ContextHolder
+import wdee.utils.Utils.OsUtils
+import wdee.utils.Utils.ResourceUtils
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path

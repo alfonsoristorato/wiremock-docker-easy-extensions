@@ -1,4 +1,4 @@
-package config
+package wdee.config
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream

@@ -1,17 +1,18 @@
-package app
+package wdee.handler
 
-import builder.ExtensionBuilder
-import config.ConfigReader
-import docker.DockerRunner
+import wdee.builder.ExtensionBuilder
+import wdee.config.ConfigReader
+import wdee.docker.DockerRunner
 import kotlin.system.exitProcess
 
-class Application {
+class CommandHandler {
     private val configReader = ConfigReader()
     private val extensionBuilder = ExtensionBuilder()
     private val dockerRunner = DockerRunner()
 
     /**
      * Run the application with the provided command line arguments.
+     * @param args Command line arguments
      */
     fun run(args: Array<String>) {
         if (args.size != 2 && !(args.size == 1 && args[0] == "help")) {
@@ -66,12 +67,5 @@ class Application {
               help                 - Show this help message.
             """.trimIndent(),
         )
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Application().run(args)
-        }
     }
 }

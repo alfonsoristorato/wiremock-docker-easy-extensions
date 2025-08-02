@@ -1,6 +1,6 @@
-package docker
+package wdee.docker
 
-import config.ContextHolder
+import wdee.config.ContextHolder
 
 class DockerRunner {
     /**
