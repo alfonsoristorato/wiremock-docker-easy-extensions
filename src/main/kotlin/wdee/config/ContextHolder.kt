@@ -1,4 +1,4 @@
-package config
+package wdee.config
 
 import java.io.File
 

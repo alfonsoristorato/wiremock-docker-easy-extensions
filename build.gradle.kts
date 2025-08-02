@@ -50,7 +50,7 @@ tasks.shadowJar {
     archiveClassifier = ""
     archiveVersion = ""
     manifest {
-        attributes["Main-Class"] = "app.Application"
+        attributes["Main-Class"] = "wdee.WireMockDockerEasyExtensions"
     }
     mergeServiceFiles()
 }

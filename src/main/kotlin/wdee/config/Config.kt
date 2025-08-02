@@ -1,4 +1,4 @@
-package config
+package wdee.config
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

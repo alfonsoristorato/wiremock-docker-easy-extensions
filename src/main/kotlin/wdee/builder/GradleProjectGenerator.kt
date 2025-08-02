@@ -1,7 +1,7 @@
-package builder
+package wdee.builder
 
-import config.ContextHolder
-import utils.Utils
+import wdee.config.ContextHolder
+import wdee.utils.Utils
 import java.io.File
 
 class GradleProjectGenerator {
