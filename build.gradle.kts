@@ -40,6 +40,13 @@ tasks.test {
     finalizedBy(tasks.koverVerify)
 }
 
+kotlin {
+    compilerOptions {
+        extraWarnings.set(true)
+        allWarningsAsErrors.set(true)
+    }
+}
+
 java.sourceCompatibility = JavaVersion.VERSION_11
 java.targetCompatibility = JavaVersion.VERSION_11
 kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_11

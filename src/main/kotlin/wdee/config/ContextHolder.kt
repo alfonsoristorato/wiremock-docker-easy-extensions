@@ -6,6 +6,7 @@ object ContextHolder {
     lateinit var configDir: String
         private set
     val projectRoot: File = File(".").canonicalFile
+    const val CONFIG_FILE_NAME = "wdee-config.yaml"
 
     object SourceFilesConfig {
         lateinit var sourceFilesLocation: String

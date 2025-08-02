@@ -39,8 +39,6 @@ object Utils {
         fun printlnWithIcon(
             icon: Icon,
             message: String,
-        ) {
-            println("${icon.icon} $message")
-        }
+        ) = println("${icon.icon} $message")
     }
 }

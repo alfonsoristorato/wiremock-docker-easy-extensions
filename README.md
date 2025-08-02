@@ -49,8 +49,8 @@ the [official WireMock documentation](https://wiremock.org/docs/extending-wiremo
 
 The tool follows these steps:
 
-1. Reads a `wiremock-docker-easy-extensions-config.yaml` file from a mounted volume.
-2. Dynamically creates a temporary Gradle project inside the container.
+1. Reads a `wdee-config.yaml` file.
+2. Dynamically creates a temporary Gradle project.
 3. Copies your extension source code into this new project.
 4. Generates a `build.gradle.kts` file configured to target JVM 11 and include any specified dependencies.
 5. Builds this project to produce a single JAR containing your extensions, their dependencies and a Java ServiceLoader
@@ -75,14 +75,14 @@ aDirectory/
 │   └── AKotlinClass.kt
 ├── mappings/                                       # (Required) Directory for WireMock `mappings` files.
 │   └── requests.json                               # (Optional) If provided, it will be copied to the WireMock container's `mappings` directory - worth noting that if there are no mappings, WireMock will not serve any responses.
-└── wiremock-docker-easy-extensions-config.yaml     # (Required) Defines extensions, dependencies, and source locations.
+└── wdee-config.yaml                                # (Required) Defines extensions, dependencies, and source locations.
 ```
 
-### `wiremock-docker-easy-extensions-config.yaml` Structure (following the directory structure above)
+### `wdee-config.yaml` Structure (following the directory structure above)
 
 ```yaml
-# (Required) The location of the extension classes relative to the parent directory where `wiremock-docker-easy-extensions-config.yaml` is located. 
-# If the classes are in the same directory as `wiremock-docker-easy-extensions-config.yaml`, this can be set to "", ".", "/", "./" according to preference.
+# (Required) The location of the extension classes relative to the parent directory where `wdee-config.yaml` is located. 
+# If the classes are in the same directory as `wdee-config.yaml`, this can be set to "", ".", "/", "./" according to preference.
 source-files-location: extensions
 
 # (Required - cannot be empty) A list of fully qualified class names of the extensions to be included in the JAR.
@@ -206,12 +206,12 @@ This method is useful for local testing or for integrating the tool into custom 
 
     ```sh
     # Build the extension JAR without starting WireMock
-    java -jar wiremock-docker-easy-extensions.jar build aDirectory/wiremock-docker-easy-extensions-config.yaml
+    java -jar wiremock-docker-easy-extensions.jar build aDirectory/wdee-config.yaml
     ```
 
     ```sh
     # Build the JAR and immediately run WireMock in a Docker container
-    java -jar wiremock-docker-easy-extensions.jar run aDirectory/wiremock-docker-easy-extensions-config.yaml
+    java -jar wiremock-docker-easy-extensions.jar run aDirectory/wdee-config.yaml
     ```
 
 ---
@@ -272,7 +272,7 @@ There are three example extensions in `examples/extensions`:
 - `ResponseTransformerExtensionWithDependenciesKotlin.kt`: A Kotlin transformer that uses an external dependency (
   `org.apache.commons:commons-lang3`).
 
-### Configuration (`wiremock-docker-easy-extensions-config.yaml`)
+### Configuration (`wdee-config.yaml`)
 
 The example config file is set up to:
 
@@ -310,7 +310,7 @@ Each mapping targets a specific URL and uses one of the custom response transfor
    Use the `run` command with the example configuration file. This will build the extension JAR and start the WireMock
    container in one step.
    ```sh
-   java -jar build/libs/wiremock-docker-easy-extensions.jar run examples/wiremock-docker-easy-extensions-config.yaml
+   java -jar build/libs/wiremock-docker-easy-extensions.jar run examples/wdee-config.yaml
    ```
 
 3. **Test with IntelliJ's HTTP Client:**

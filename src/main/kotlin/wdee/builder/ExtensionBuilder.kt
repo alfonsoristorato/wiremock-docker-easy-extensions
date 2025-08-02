@@ -18,37 +18,35 @@ class ExtensionBuilder(
      *
      * @return true if the build was successful, false otherwise
      */
-    fun build(): Boolean {
-        val tempBuildDir = ContextHolder.projectRoot.resolve(".extensions-builder")
+    fun build(): Boolean =
+        ContextHolder.projectRoot.resolve(".extensions-builder").let { tempBuildDir ->
+            runCatching {
+                tempBuildDir.deleteRecursively()
+                tempBuildDir.mkdirs()
 
-        return runCatching {
-            tempBuildDir.deleteRecursively()
-            tempBuildDir.mkdirs()
+                gradleGenerator.generate(tempBuildDir)
 
-            gradleGenerator.generate(tempBuildDir)
-
-            copySourceFilesAndGenerateServiceDiscoveryFiles(
-                tempBuildDir.toPath(),
-            )
-            if (!runGradleBuild(tempBuildDir)) {
-                return@runCatching false
-            }
-            moveFinalJar(tempBuildDir.toPath())
-            PrintUtils.printlnWithIcon(
-                icon = PrintUtils.Icon.GREEN_CHECK,
-                message = "Success! Extension JAR created at: ${ContextHolder.OutputConfig.DIR}/${ContextHolder.OutputConfig.JAR_NAME}",
-            )
-            true
-        }.onFailure {
-            PrintUtils.printlnWithIcon(
-                icon = PrintUtils.Icon.ERROR,
-                message = "Error building extensions: ${it.message}",
-            )
-            false
-        }.also {
-            tempBuildDir.deleteRecursively()
-        }.getOrThrow()
-    }
+                copySourceFilesAndGenerateServiceDiscoveryFiles(
+                    tempBuildDir.toPath(),
+                )
+                if (!runGradleBuild(tempBuildDir)) {
+                    return@runCatching false
+                }
+                moveFinalJar(tempBuildDir.toPath())
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.GREEN_CHECK,
+                    message = "Success! Extension JAR created at: ${ContextHolder.OutputConfig.DIR}/${ContextHolder.OutputConfig.JAR_NAME}",
+                )
+                true
+            }.onFailure {
+                PrintUtils.printlnWithIcon(
+                    icon = PrintUtils.Icon.ERROR,
+                    message = "Error building extensions: ${it.message}",
+                )
+            }.also {
+                tempBuildDir.deleteRecursively()
+            }.getOrDefault(false)
+        }
 
     /**
      * Copies source files and generates the Service Loader file for WireMock extensions.

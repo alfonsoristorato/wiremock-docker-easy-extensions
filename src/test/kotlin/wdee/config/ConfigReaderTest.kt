@@ -10,11 +10,11 @@ import utils.TestUtils.DEFAULT_WIREMOCK_CL_OPTIONS
 import utils.TestUtils.getConfigFileFromResources
 import java.io.File
 
-class ConfigLoaderTest :
+class ConfigReaderTest :
     StringSpec({
 
         "should load and parse the config file correctly - setting ContextHolder" {
-            val configFile = getConfigFileFromResources("test-config.yaml")
+            val configFile = getConfigFileFromResources("test-config/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -41,8 +41,21 @@ class ConfigLoaderTest :
             exception.message shouldBe "Configuration file not found: non-existent-file.yaml"
         }
 
+        "should throw exception when config file is not named correctly" {
+            val configReader = ConfigReader()
+            val configFile = getConfigFileFromResources("test-config/wrong-name-config.yaml")
+
+            val exception =
+                shouldThrow<RuntimeException> {
+                    configReader.readConfigAndInitializeContext(configFile.absolutePath)
+                }
+
+            exception.message shouldBe
+                "Invalid configuration file name. Expected '${ContextHolder.CONFIG_FILE_NAME}', got 'wrong-name-config.yaml'"
+        }
+
         "should handle config with empty dependencies list" {
-            val configFile = getConfigFileFromResources("test-config-empty-list-deps.yaml")
+            val configFile = getConfigFileFromResources("test-config-empty-list-deps/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -51,7 +64,7 @@ class ConfigLoaderTest :
         }
 
         "should handle config with null dependencies list" {
-            val configFile = getConfigFileFromResources("test-config-null-deps.yaml")
+            val configFile = getConfigFileFromResources("test-config-null-deps/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -60,7 +73,7 @@ class ConfigLoaderTest :
         }
 
         "should handle config with single source file" {
-            val configFile = getConfigFileFromResources("test-config-single-file.yaml")
+            val configFile = getConfigFileFromResources("test-config-single-file/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -71,7 +84,7 @@ class ConfigLoaderTest :
         }
 
         "should use jarRunConfig if provided" {
-            val configFile = getConfigFileFromResources("test-config-with-jar-run-config.yaml")
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -82,7 +95,7 @@ class ConfigLoaderTest :
         }
 
         "should default jarRunConfig.dockerPort if not provided" {
-            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-no-port.yaml")
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-no-port/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -93,7 +106,7 @@ class ConfigLoaderTest :
         }
 
         "should default jarRunConfig.dockerContainerName if not provided" {
-            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-no-container-name.yaml")
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-no-container-name/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -104,7 +117,7 @@ class ConfigLoaderTest :
         }
 
         "should default jarRunConfig.wiremockClOptions if null in config" {
-            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-null-wiremock-cl-options.yaml")
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-null-wiremock-cl-options/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -113,7 +126,7 @@ class ConfigLoaderTest :
         }
 
         "should default jarRunConfig.wiremockClOptions if empty in config" {
-            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-empty-wiremock-cl-options.yaml")
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-empty-wiremock-cl-options/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)
@@ -122,7 +135,7 @@ class ConfigLoaderTest :
         }
 
         "should default whole JarRunConfig if not provided" {
-            val configFile = getConfigFileFromResources("test-config.yaml")
+            val configFile = getConfigFileFromResources("test-config/wdee-config.yaml")
             val configReader = ConfigReader()
 
             configReader.readConfigAndInitializeContext(configFile.absolutePath)

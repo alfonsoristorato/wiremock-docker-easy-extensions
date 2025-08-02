@@ -15,6 +15,16 @@ class ConfigReader {
             .takeIf {
                 it.exists()
             }?.let { configFile ->
+                if (configFile.name != ContextHolder.CONFIG_FILE_NAME) {
+                    "Invalid configuration file name. Expected '${ContextHolder.CONFIG_FILE_NAME}', got '${configFile.name}'"
+                        .let {
+                            PrintUtils.printlnWithIcon(
+                                icon = PrintUtils.Icon.ERROR,
+                                message = it,
+                            )
+                            throw RuntimeException(it)
+                        }
+                }
                 PrintUtils.printlnWithIcon(
                     icon = PrintUtils.Icon.PAGE,
                     message = "Loading configuration from $configFilePath",

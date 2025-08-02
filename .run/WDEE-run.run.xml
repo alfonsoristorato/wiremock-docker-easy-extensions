@@ -2,7 +2,7 @@
   <configuration default="false" name="WDEE-run" type="JetRunConfigurationType">
     <option name="MAIN_CLASS_NAME" value="wdee.WireMockDockerEasyExtensions" />
     <module name="wiremock-docker-easy-extensions.main" />
-    <option name="PROGRAM_PARAMETERS" value="run ./examples/wiremock-docker-easy-extensions-config.yaml" />
+    <option name="PROGRAM_PARAMETERS" value="run ./examples/wdee-config.yaml" />
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />

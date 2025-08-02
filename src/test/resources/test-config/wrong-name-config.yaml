@@ -1,0 +1,9 @@
+source-files-location: src/main/kotlin
+
+source-files:
+  - File1.kt
+  - File2.java
+
+dependencies:
+  - org.apache.commons:commons-lang3:3.18.0
+
