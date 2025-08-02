@@ -5,7 +5,6 @@ import java.io.File
 object ContextHolder {
     lateinit var configDir: String
         private set
-    private var isInitialized = false
     val projectRoot: File = File(".").canonicalFile
 
     object SourceFilesConfig {
@@ -74,10 +73,8 @@ object ContextHolder {
         config: Config,
         configFile: File,
     ) {
-        if (isInitialized) return
         configDir = configFile.parentFile?.canonicalPath ?: "."
         SourceFilesConfig.init(config)
         JarRunConfig.init(config)
-        isInitialized = true
     }
 }
