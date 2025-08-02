@@ -31,6 +31,8 @@ object ContextHolder {
             private set
         lateinit var dockerPort: String
             private set
+        lateinit var wiremockClOptions: List<String>
+            private set
         lateinit var wiremockMappingsPath: String
             private set
         lateinit var wiremockFilesPath: String
@@ -39,6 +41,7 @@ object ContextHolder {
         internal fun init(config: Config) {
             dockerContainerName = config.jarRunConfig.dockerContainerName
             dockerPort = config.jarRunConfig.dockerPort.toString()
+            wiremockClOptions = config.jarRunConfig.wiremockClOptions ?: emptyList()
             wiremockMappingsPath = "$configDir/mappings"
             wiremockFilesPath = "$configDir/__files"
         }

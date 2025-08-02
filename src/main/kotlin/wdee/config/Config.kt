@@ -15,4 +15,5 @@ data class Config(
 data class JarRunConfig(
     @SerialName("docker-container-name") val dockerContainerName: String = "wiremock-docker-easy-extensions",
     @SerialName("docker-port")val dockerPort: Int = 8080,
+    @SerialName("wiremock-cl-options") val wiremockClOptions: List<String>? = emptyList(),
 )

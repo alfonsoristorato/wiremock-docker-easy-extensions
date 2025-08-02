@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
 import utils.TestUtils.DEFAULT_DOCKER_CONTAINER_NAME
 import utils.TestUtils.DEFAULT_DOCKER_PORT
+import utils.TestUtils.DEFAULT_WIREMOCK_CL_OPTIONS
 import utils.TestUtils.getConfigFileFromResources
 import java.io.File
 
@@ -22,8 +23,9 @@ class ConfigLoaderTest :
             ContextHolder.SourceFilesConfig.sourceFilesLocation shouldEndWith "src/main/kotlin"
             ContextHolder.SourceFilesConfig.sourceFiles shouldBe listOf("File1.kt", "File2.java")
             ContextHolder.SourceFilesConfig.dependencies shouldBe listOf("org.apache.commons:commons-lang3:3.18.0")
-            ContextHolder.JarRunConfig.dockerContainerName shouldBe "wiremock-docker-easy-extensions"
-            ContextHolder.JarRunConfig.dockerPort shouldBe "8080"
+            ContextHolder.JarRunConfig.dockerContainerName shouldBe DEFAULT_DOCKER_CONTAINER_NAME
+            ContextHolder.JarRunConfig.dockerPort shouldBe DEFAULT_DOCKER_PORT
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe DEFAULT_WIREMOCK_CL_OPTIONS
             ContextHolder.JarRunConfig.wiremockMappingsPath shouldEndWith "mappings"
             ContextHolder.JarRunConfig.wiremockFilesPath shouldEndWith "__files"
         }
@@ -76,6 +78,7 @@ class ConfigLoaderTest :
 
             ContextHolder.JarRunConfig.dockerContainerName shouldBe "my-test-container"
             ContextHolder.JarRunConfig.dockerPort shouldBe "9090"
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe listOf("--verbose", "--record-mappings")
         }
 
         "should default jarRunConfig.dockerPort if not provided" {
@@ -86,6 +89,7 @@ class ConfigLoaderTest :
 
             ContextHolder.JarRunConfig.dockerContainerName shouldBe "my-test-container"
             ContextHolder.JarRunConfig.dockerPort shouldBe DEFAULT_DOCKER_PORT
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe listOf("--verbose", "--record-mappings")
         }
 
         "should default jarRunConfig.dockerContainerName if not provided" {
@@ -96,6 +100,25 @@ class ConfigLoaderTest :
 
             ContextHolder.JarRunConfig.dockerContainerName shouldBe DEFAULT_DOCKER_CONTAINER_NAME
             ContextHolder.JarRunConfig.dockerPort shouldBe "9090"
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe listOf("--verbose", "--record-mappings")
+        }
+
+        "should default jarRunConfig.wiremockClOptions if null in config" {
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-null-wiremock-cl-options.yaml")
+            val configReader = ConfigReader()
+
+            configReader.readConfigAndInitializeContext(configFile.absolutePath)
+
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe emptyList()
+        }
+
+        "should default jarRunConfig.wiremockClOptions if empty in config" {
+            val configFile = getConfigFileFromResources("test-config-with-jar-run-config-empty-wiremock-cl-options.yaml")
+            val configReader = ConfigReader()
+
+            configReader.readConfigAndInitializeContext(configFile.absolutePath)
+
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe emptyList()
         }
 
         "should default whole JarRunConfig if not provided" {
@@ -106,5 +129,6 @@ class ConfigLoaderTest :
 
             ContextHolder.JarRunConfig.dockerContainerName shouldBe DEFAULT_DOCKER_CONTAINER_NAME
             ContextHolder.JarRunConfig.dockerPort shouldBe DEFAULT_DOCKER_PORT
+            ContextHolder.JarRunConfig.wiremockClOptions shouldBe DEFAULT_WIREMOCK_CL_OPTIONS
         }
     })

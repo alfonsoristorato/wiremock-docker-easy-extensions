@@ -7,7 +7,5 @@ dependencies:
 
 jar-run-config:
   docker-container-name: "my-test-container"
-  wiremock-cl-options:
-    - --verbose
-    - --record-mappings
+  docker-port: 9090
 
