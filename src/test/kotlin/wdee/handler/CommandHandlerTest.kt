@@ -35,7 +35,6 @@ class CommandHandlerTest :
             )
 
         beforeAny {
-            clearAllMocks()
             every { exitFunction(1) } answers { throw TestExitException(firstArg()) }
             every { extensionBuilder.build() } returns true
             every { configReader.readConfigAndInitializeContext(any()) } just runs
@@ -48,6 +47,7 @@ class CommandHandlerTest :
                 dockerRunner,
                 exitFunction,
             )
+            clearAllMocks()
         }
 
         """should call extensionBuilder.build when `build` command is executed 

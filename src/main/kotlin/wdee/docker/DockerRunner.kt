@@ -3,7 +3,10 @@ package wdee.docker
 import wdee.config.ContextHolder
 import wdee.utils.Utils.PrintUtils
 
-class DockerRunner {
+class DockerRunner(
+    private val processBuilder: ProcessBuilder = ProcessBuilder(),
+    private val runTime: Runtime = Runtime.getRuntime(),
+) {
     /**
      * Runs a WireMock container with the generated extensions using the provided configuration.
      */
@@ -40,30 +43,45 @@ class DockerRunner {
                 "wiremock/wiremock:3.13.1",
             ) + ContextHolder.JarRunConfig.wiremockClOptions
 
-        Runtime.getRuntime().addShutdownHook(
+        runTime.addShutdownHook(
             Thread {
                 PrintUtils.printlnWithIcon(
                     icon = PrintUtils.Icon.RED_DOT,
                     message = "Shutdown hook triggered. Stopping WireMock container...",
                 )
-                try {
-                    ProcessBuilder("docker", "stop", ContextHolder.JarRunConfig.dockerContainerName).start().waitFor()
-                } catch (e: Exception) {
-                    System.err.println("Failed to stop container: ${e.message}")
+                runCatching {
+                    processBuilder
+                        .command(
+                            listOf(
+                                "docker",
+                                "stop",
+                                ContextHolder.JarRunConfig.dockerContainerName,
+                            ),
+                        ).start()
+                        .waitFor()
+                }.onFailure {
+                    PrintUtils.printlnWithIcon(
+                        icon = PrintUtils.Icon.ERROR,
+                        message = "Failed to remove WireMock container: ${it.message}",
+                    )
+                    throw RuntimeException("Failed to remove WireMock container", it)
                 }
             },
         )
 
-        try {
-            val process =
-                ProcessBuilder(command)
-                    .directory(ContextHolder.projectRoot)
-                    .inheritIO()
-                    .start()
-
-            process.waitFor()
-        } catch (e: Exception) {
-            System.err.println("Failed to start WireMock container: ${e.message}")
+        runCatching {
+            processBuilder
+                .command(command)
+                .directory(ContextHolder.projectRoot)
+                .inheritIO()
+                .start()
+                .waitFor()
+        }.onFailure {
+            PrintUtils.printlnWithIcon(
+                icon = PrintUtils.Icon.ERROR,
+                message = "Failed to start WireMock container: ${it.message}",
+            )
+            throw RuntimeException("Failed to start WireMock container", it)
         }
     }
 }
