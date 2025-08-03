@@ -40,6 +40,7 @@ class DockerRunnerTest :
             confirmVerified(
                 processBuilder,
                 process,
+                runtime,
             )
             clearAllMocks()
         }
@@ -79,6 +80,9 @@ class DockerRunnerTest :
             output shouldContain "Starting WireMock container '$DEFAULT_DOCKER_CONTAINER_NAME'..."
 
             verifySequence {
+                // add shutdown hook sequence
+                runtime.addShutdownHook(any())
+
                 // start sequence
                 processBuilder.command(expectedCommand)
                 // This should be the `ContextHolder.projectRoot` instead of `any()`, but because ContextHolder is mocked,
@@ -109,6 +113,9 @@ class DockerRunnerTest :
             output shouldContain "Failed to start WireMock container: An Exception during start"
 
             verifySequence {
+                // add shutdown hook sequence
+                runtime.addShutdownHook(any())
+
                 // start sequence
                 processBuilder.command(any<List<String>>())
                 processBuilder.directory(any())
@@ -132,6 +139,9 @@ class DockerRunnerTest :
             } shouldContain "Shutdown hook triggered. Stopping WireMock container..."
 
             verifySequence {
+                // add shutdown hook sequence
+                runtime.addShutdownHook(any())
+
                 // start sequence
                 processBuilder.command(any<List<String>>())
                 processBuilder.directory(any())
@@ -168,6 +178,9 @@ class DockerRunnerTest :
             } shouldContain "Failed to remove WireMock container: An Exception during stop"
 
             verifySequence {
+                // add shutdown hook sequence
+                runtime.addShutdownHook(any())
+
                 // start sequence
                 processBuilder.command(any<List<String>>())
                 processBuilder.directory(any())
