@@ -5,11 +5,12 @@ import wdee.config.ConfigReader
 import wdee.docker.DockerRunner
 import kotlin.system.exitProcess
 
-class CommandHandler {
-    private val configReader = ConfigReader()
-    private val extensionBuilder = ExtensionBuilder()
-    private val dockerRunner = DockerRunner()
-
+class CommandHandler(
+    private val configReader: ConfigReader = ConfigReader(),
+    private val extensionBuilder: ExtensionBuilder = ExtensionBuilder(),
+    private val dockerRunner: DockerRunner = DockerRunner(),
+    private val exitFunction: (Int) -> Unit = { exitProcess(it) },
+) {
     /**
      * Run the application with the provided command line arguments.
      * @param args Command line arguments
@@ -18,7 +19,7 @@ class CommandHandler {
         if (args.size != 2 && !(args.size == 1 && args[0] == "help")) {
             println("Error: Invalid arguments. Please provide a command and a config file.")
             printUsage()
-            exitProcess(1)
+            exitFunction(1)
         }
         val command = args[0]
 
@@ -27,27 +28,28 @@ class CommandHandler {
             return
         }
         val configFile = args[1]
-        configReader.readConfigAndInitializeContext(configFile)
 
         when (command) {
             "build" -> {
+                configReader.readConfigAndInitializeContext(configFile)
                 val success = extensionBuilder.build()
                 if (!success) {
-                    exitProcess(1)
+                    exitFunction(1)
                 }
             }
             "run" -> {
+                configReader.readConfigAndInitializeContext(configFile)
                 val success = extensionBuilder.build()
                 if (success) {
                     dockerRunner.runWiremockContainer()
                 } else {
-                    exitProcess(1)
+                    exitFunction(1)
                 }
             }
             else -> {
                 println("Unknown command: $command")
                 printUsage()
-                exitProcess(1)
+                exitFunction(1)
             }
         }
     }

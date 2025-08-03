@@ -25,6 +25,7 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.kotest)
+    testImplementation(libs.mockk)
 }
 
 tasks.build {
