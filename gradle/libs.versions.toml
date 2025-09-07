@@ -2,7 +2,7 @@
 [versions]
 #Main project
 gradle-ktlint                   = "13.1.0"
-kaml                            = "0.85.0"
+kaml                            = "0.94.0"
 kotest                          = "5.9.1"
 kotlin                          = "2.2.0"
 kotlinx-serialization-json      = "1.9.0"
