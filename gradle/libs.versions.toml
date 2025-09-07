@@ -1,7 +1,7 @@
 # Keep alphabetical and formatted correctly please
 [versions]
 #Main project
-gradle-ktlint                   = "13.0.0"
+gradle-ktlint                   = "13.1.0"
 kaml                            = "0.85.0"
 kotest                          = "5.9.1"
 kotlin                          = "2.2.0"
