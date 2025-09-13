@@ -1,7 +1,7 @@
 package wdee.docker
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.withData
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -19,8 +19,9 @@ import utils.TestUtils.DEFAULT_DOCKER_CONTAINER_NAME
 import utils.TestUtils.DEFAULT_DOCKER_PORT
 import wdee.config.ContextHolder
 
+// TODO switch back to StringSpec with kotest 6.0.4
 class DockerRunnerTest :
-    StringSpec({
+    FreeSpec({
         val processBuilder = mockk<ProcessBuilder>()
 
         val process = mockk<Process>()
