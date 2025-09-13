@@ -53,7 +53,7 @@ java.targetCompatibility = JavaVersion.VERSION_11
 kotlin.compilerOptions.jvmTarget = JvmTarget.JVM_11
 
 tasks.shadowJar {
-    enableRelocation = true
+    enableAutoRelocation = true
     archiveBaseName = "wiremock-docker-easy-extensions"
     archiveClassifier = ""
     archiveVersion = ""
