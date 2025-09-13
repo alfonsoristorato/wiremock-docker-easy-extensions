@@ -77,11 +77,16 @@ kover {
     reports {
         verify {
             rule {
-                minBound(0) // TODO replace with actual minimum coverage percentage once there are tests
+                minBound(50)
             }
-            rule("Class coverage") {
-                minBound(0) // TODO replace with actual minimum coverage percentage once there are tests
-            }
+
+//            rule("Minimal line coverage in percents") {
+//                bound {
+//                    minValue = 50
+//                    coverageUnits = CoverageUnit.LINE
+//                    aggregationForGroup = AggregationType.COVERED_PERCENTAGE
+//                }
+//            }
         }
     }
 }
