@@ -81,7 +81,7 @@ tasks.processTestResources {
             "mappings/**",
             "wdee-config.yaml",
         )
-        into("/e2e")
+        into("/e2e-resources")
     }
 }
 

@@ -16,7 +16,7 @@ class E2eJarBuild :
     FunSpec({
 
         val projectDir = File(".").canonicalFile
-        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e")
+        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
         val configFile = File(e2eFilesDir, "wdee-config.yaml")
         val wiremockMappingsDir = File(e2eFilesDir, "mappings")
         val wiremockFilesDir = File(e2eFilesDir, "__files")

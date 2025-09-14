@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 class E2eJarRun :
     FunSpec({
         val projectDir = File(".").canonicalFile
-        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e")
+        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
         val configFile = File(e2eFilesDir, "wdee-config.yaml")
         val wdeeBuiltJar = File(projectDir, "build/libs/wiremock-docker-easy-extensions.jar")
         val containerName = "wiremock-docker-easy-extensions"
