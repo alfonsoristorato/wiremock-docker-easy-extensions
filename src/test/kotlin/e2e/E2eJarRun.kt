@@ -1,4 +1,4 @@
-package wdee.e2e
+package e2e
 
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.FunSpec
