@@ -52,11 +52,8 @@ class E2eJarBuild :
                 GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.1"))
                     .withExposedPorts(8080)
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockMappingsDir.absolutePath), "/home/wiremock/mappings")
-                    .apply {
-                        if (wiremockFilesDir.listFiles().isNotEmpty()) {
-                            withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
-                        }
-                    }.withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")
+                    .withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
+                    .withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")
                     .withLogConsumer { frame: OutputFrame ->
                         val txt = frame.utf8String?.trimEnd().orEmpty()
                         if (txt.isNotEmpty()) {
@@ -83,14 +80,16 @@ class E2eJarBuild :
             HttpUtils.get(endpoint("/ResponseTransformerExtensionNoDependenciesKotlin")) shouldBe
                 "Response from ResponseTransformerExtensionNoDependenciesKotlin"
         }
-
         test("Java no dependency transformer") {
             HttpUtils.get(endpoint("/ResponseTransformerExtensionNoDependenciesJava")) shouldBe
                 "Response from ResponseTransformerExtensionNoDependenciesJava"
         }
-
         test("Kotlin with dependency transformer") {
             HttpUtils.get(endpoint("/ResponseTransformerExtensionWithDependenciesKotlin")) shouldBe
                 "Response from ResponseTransformerExtensionWithDependenciesKotlin using StringUtils from Apache Commons Lang3"
+        }
+        test("No Extension stub") {
+            HttpUtils.get(endpoint("/noExtension")) shouldBe
+                "No Extension"
         }
     })

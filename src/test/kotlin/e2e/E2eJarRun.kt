@@ -72,4 +72,8 @@ class E2eJarRun :
             HttpUtils.get(endpoint("/ResponseTransformerExtensionWithDependenciesKotlin")) shouldBe
                 "Response from ResponseTransformerExtensionWithDependenciesKotlin using StringUtils from Apache Commons Lang3"
         }
+        test("No Extension stub") {
+            HttpUtils.get(endpoint("/noExtension")) shouldBe
+                "No Extension"
+        }
     })

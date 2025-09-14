@@ -44,6 +44,19 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPath": "/noExtension"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "noExtension.txt",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
   ]
 }
