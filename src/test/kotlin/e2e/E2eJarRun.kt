@@ -20,25 +20,13 @@ class E2eJarRun :
         val eventuallyWait = 30.seconds
         lateinit var wdeeProcess: Process
 
-        fun dockerAvailable(): Boolean =
-            runCatching {
-                processBuilder.command(listOf("docker", "ps")).start().waitFor() == 0
-            }.getOrDefault(false)
-
         fun wdeeRunning() = HttpUtils.get("http://localhost:$port/__admin/health")
 
         fun stopContainer() {
             runCatching { processBuilder.command(listOf("docker", "stop", containerName)).start().waitFor() }
         }
 
-        fun removeContainerIfExists() {
-            runCatching { processBuilder.command(listOf("docker", "rm", "-f", containerName)).start().waitFor() }
-        }
-
         beforeSpec {
-            if (!dockerAvailable()) error("Docker not available; cannot run e2e 'run' command test")
-            removeContainerIfExists()
-
             wdeeProcess =
                 TestUtils.wdeeCommandHandlerAndLogger(
                     processBuilder = processBuilder,
