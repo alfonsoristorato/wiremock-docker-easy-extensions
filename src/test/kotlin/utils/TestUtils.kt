@@ -60,4 +60,19 @@ object TestUtils {
         every { ContextHolder.JarRunConfig.wiremockMappingsPath } returns wiremockMappingsPath
         every { ContextHolder.JarRunConfig.wiremockFilesPath } returns wiremockFilesPath
     }
+
+    fun wdeeCommandHandlerAndLogger(
+        processBuilder: ProcessBuilder,
+        wdeeBuiltJarPath: String,
+        command: String,
+        wdeeConfigFilePath: String,
+        projectDir: File,
+    ): Process =
+        processBuilder
+            .command(listOf("java", "-jar", wdeeBuiltJarPath, command, wdeeConfigFilePath))
+            .directory(projectDir)
+            .start()
+            .also { process ->
+                Thread { process.inputStream.bufferedReader().forEachLine { println(it) } }.start()
+            }
 }

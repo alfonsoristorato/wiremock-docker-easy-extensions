@@ -263,7 +263,8 @@ java -jar build/libs/wiremock-docker-easy-extensions.jar run <path-to-your-confi
 ## Examples
 
 The `examples` directory contains a fully functional sample setup that follows the required directory structure and
-demonstrates how to use this tool.
+demonstrates how to use this tool, combining both traditional `WireMock` usage with the `noExtension` mapping and its
+usage with extensions.
 
 ### Included Extensions
 

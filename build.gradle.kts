@@ -26,10 +26,11 @@ dependencies {
     // Testing
     testImplementation(libs.bundles.kotest)
     testImplementation(libs.mockk)
+    testImplementation(libs.testcontainers)
 }
 
 tasks.build {
-    dependsOn(tasks.ktlintFormat, tasks.shadowJar)
+    dependsOn(tasks.ktlintFormat, tasks.koverVerify, tasks.shadowJar)
 }
 
 tasks.jar {
@@ -38,7 +39,6 @@ tasks.jar {
 
 tasks.test {
     useJUnitPlatform()
-    finalizedBy(tasks.koverVerify)
 }
 
 kotlin {
@@ -70,6 +70,18 @@ tasks.processResources {
     }
     from(layout.projectDirectory.dir("gradle")) {
         into("/gradle")
+    }
+}
+
+tasks.processTestResources {
+    from(layout.projectDirectory.dir("examples")) {
+        include(
+            "__files/**",
+            "extensions/**",
+            "mappings/**",
+            "wdee-config.yaml",
+        )
+        into("/e2e-resources")
     }
 }
 
