@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get install -y git && \
     git clone https://github.com/alfonsoristorato/wiremock-docker-easy-extensions.git .
 
-RUN ./gradlew build --no-daemon
+RUN ./gradlew shadowJar --no-daemon
 
 FROM wiremock/wiremock:3.13.1
 COPY --from=wiremock-docker-easy-extensions_builder /builder/build/libs/wiremock-docker-easy-extensions.jar .
