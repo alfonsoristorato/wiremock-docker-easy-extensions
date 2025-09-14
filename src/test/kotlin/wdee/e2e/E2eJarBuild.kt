@@ -4,6 +4,7 @@ import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.output.OutputFrame
 import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import utils.HttpUtils
@@ -20,6 +21,7 @@ class E2eJarBuild :
         val wiremockMappingsDir = File(e2eFilesDir, "mappings")
         val wiremockFilesDir = File(e2eFilesDir, "__files")
         val wdeeBuiltJar = File(projectDir, "build/libs/wiremock-docker-easy-extensions.jar")
+        val port = 8080
         val processBuilder = ProcessBuilder()
         val eventuallyWait = 30.seconds
         lateinit var wdeeProcess: Process
@@ -27,7 +29,9 @@ class E2eJarBuild :
 
         fun locateBuiltExtensionJar(): File = File(projectDir, "build/extensions/wiremock-extensions-bundled.jar")
 
-        fun wiremockRunning() = HttpUtils.get("http://localhost:${wiremockContainer.getMappedPort(8080)}/__admin/health")
+        val hostResolver = { "http://${wiremockContainer.host}:${wiremockContainer.getMappedPort(port)}" }
+
+        fun wiremockRunning() = HttpUtils.get("${hostResolver()}/__admin/health")
 
         beforeSpec {
             wdeeProcess =
@@ -48,9 +52,17 @@ class E2eJarBuild :
                 GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.1"))
                     .withExposedPorts(8080)
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockMappingsDir.absolutePath), "/home/wiremock/mappings")
-                    .withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
-                    .withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")
-
+                    .apply {
+                        if (wiremockFilesDir.listFiles().isNotEmpty()) {
+                            withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
+                        }
+                    }.withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")
+                    .withLogConsumer { frame: OutputFrame ->
+                        val txt = frame.utf8String?.trimEnd().orEmpty()
+                        if (txt.isNotEmpty()) {
+                            println("[wiremockContainer] $txt")
+                        }
+                    }
             wiremockContainer.start()
 
             eventually(eventuallyWait) {
@@ -65,7 +77,7 @@ class E2eJarBuild :
             }
         }
 
-        fun endpoint(path: String) = "http://localhost:${wiremockContainer.getMappedPort(8080)}$path"
+        fun endpoint(path: String) = "${hostResolver()}$path"
 
         test("Kotlin no dependency transformer") {
             HttpUtils.get(endpoint("/ResponseTransformerExtensionNoDependenciesKotlin")) shouldBe

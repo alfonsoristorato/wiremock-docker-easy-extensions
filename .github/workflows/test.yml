@@ -26,4 +26,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build and Test with Gradle
-        run: ./gradlew build --debug
+        run: ./gradlew build
