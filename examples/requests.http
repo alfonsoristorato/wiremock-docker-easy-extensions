@@ -7,5 +7,5 @@ GET http://localhost:8080/ResponseTransformerExtensionNoDependenciesKotlin
 ### GET request to ResponseTransformerExtensionWithDependenciesKotlin
 GET http://localhost:8080/ResponseTransformerExtensionWithDependenciesKotlin
 
-### GET request to NoExtensions
-GET http://localhost:8080/noExtensions
+### GET request to NoExtension
+GET http://localhost:8080/noExtension

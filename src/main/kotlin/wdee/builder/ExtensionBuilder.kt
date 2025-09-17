@@ -11,7 +11,8 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.createDirectories
 
 class ExtensionBuilder(
-    private val gradleGenerator: GradleProjectGenerator = GradleProjectGenerator(),
+    private val gradleProjectGenerator: GradleProjectGenerator = GradleProjectGenerator(),
+    private val processBuilder: ProcessBuilder = ProcessBuilder(),
 ) {
     /**
      * Builds JAR containing the extension classes, their Service Loader and dependencies according to the provided configuration.
@@ -24,7 +25,7 @@ class ExtensionBuilder(
                 tempBuildDir.deleteRecursively()
                 tempBuildDir.mkdirs()
 
-                gradleGenerator.generate(tempBuildDir)
+                gradleProjectGenerator.generate(tempBuildDir)
 
                 copySourceFilesAndGenerateServiceDiscoveryFiles(
                     tempBuildDir.toPath(),
@@ -119,8 +120,15 @@ class ExtensionBuilder(
         copyGradleWrapper(buildDir)
         val gradleCommand = "gradlew.bat".takeIf { OsUtils.isOsWindows() } ?: "./gradlew"
 
-        return ProcessBuilder(gradleCommand, "shadowJar", "--no-daemon", "-q")
-            .directory(buildDir)
+        return processBuilder
+            .command(
+                listOf(
+                    gradleCommand,
+                    "shadowJar",
+                    "--no-daemon",
+                    "-q",
+                ),
+            ).directory(buildDir)
             .inheritIO()
             .start()
             .waitFor() == 0
