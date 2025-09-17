@@ -28,7 +28,7 @@ object TestUtils {
     fun mockContextHolder(
         configDir: String = ".",
         projectRoot: File = File(".").canonicalFile,
-        sourceFilesLocation: String = "src/main/java",
+        sourceFilesLocation: String = "src/main/kotlin",
         sourceFiles: List<String> = emptyList(),
         dependencies: List<String> = emptyList(),
         dockerContainerName: String = DEFAULT_DOCKER_CONTAINER_NAME,

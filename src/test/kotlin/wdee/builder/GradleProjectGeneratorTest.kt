@@ -1,17 +1,17 @@
 package wdee.builder
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
 import utils.TestUtils
-import java.io.File
 
 class GradleProjectGeneratorTest :
     StringSpec({
 
-        val tempDir = File(".").canonicalFile.resolve(".GradleProjectGeneratorTestTemp")
+        val tempDir = tempdir()
         val generator = GradleProjectGenerator()
-        afterTest {
+        afterAny {
             clearAllMocks()
             tempDir.deleteRecursively()
         }
