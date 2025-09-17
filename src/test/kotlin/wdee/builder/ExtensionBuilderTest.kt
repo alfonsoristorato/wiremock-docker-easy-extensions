@@ -74,4 +74,49 @@ class ExtensionBuilderTest :
 
             result shouldBe true
         }
+
+        "build should fail when gradle build process fails" {
+            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = true, gradleWrapperPresent = true)
+            val mockProcess = mockk<Process>(relaxed = true)
+            every { processBuilder.command(any<List<String>>()) } returns processBuilder
+            every { processBuilder.directory(any()) } returns processBuilder
+            every { processBuilder.inheritIO() } returns processBuilder
+            every { processBuilder.start() } answers {
+                simulateFinalJarCreation(tempDir)
+                mockProcess
+            }
+            every { mockProcess.waitFor() } returns 1
+            val result = extensionBuilder.build()
+            result shouldBe false
+        }
+
+        "build should fail when final jar does not get created even if gradle build process succeeds" {
+            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = true, gradleWrapperPresent = true)
+            val mockProcess = mockk<Process>(relaxed = true)
+            every { processBuilder.command(any<List<String>>()) } returns processBuilder
+            every { processBuilder.directory(any()) } returns processBuilder
+            every { processBuilder.inheritIO() } returns processBuilder
+            every { processBuilder.start() } returns mockProcess
+            every { mockProcess.waitFor() } returns 0
+            val result = extensionBuilder.build()
+            result shouldBe false
+        }
+
+        "build should fail when libs.versions.toml is missing" {
+            generateRequiredFiles(libsVersionFilePresent = false, sourceFilePresent = true, gradleWrapperPresent = true)
+            val result = extensionBuilder.build()
+            result shouldBe false
+        }
+
+        "build should fail when source file is missing" {
+            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = false, gradleWrapperPresent = true)
+            val result = extensionBuilder.build()
+            result shouldBe false
+        }
+
+        "build should fail when gradle wrapper is missing" {
+            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = true, gradleWrapperPresent = false)
+            val result = extensionBuilder.build()
+            result shouldBe false
+        }
     })
