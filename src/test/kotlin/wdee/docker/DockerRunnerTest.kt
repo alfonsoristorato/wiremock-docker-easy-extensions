@@ -34,7 +34,7 @@ class DockerRunnerTest :
             every { processBuilder.inheritIO() } returns processBuilder
             every { processBuilder.start() } returns process
             every { process.waitFor() } returns 0
-            every { runtime.addShutdownHook(any()) } answers { callOriginal() }
+            every { runtime.addShutdownHook(any()) } just runs
         }
 
         afterAny {
