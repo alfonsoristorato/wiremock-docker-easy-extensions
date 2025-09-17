@@ -89,16 +89,8 @@ kover {
     reports {
         verify {
             rule {
-                minBound(50)
+                minBound(90)
             }
-
-//            rule("Minimal line coverage in percents") {
-//                bound {
-//                    minValue = 50
-//                    coverageUnits = CoverageUnit.LINE
-//                    aggregationForGroup = AggregationType.COVERED_PERCENTAGE
-//                }
-//            }
         }
     }
 }
