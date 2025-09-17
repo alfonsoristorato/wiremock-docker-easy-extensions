@@ -1,6 +1,8 @@
 package wdee.builder
 
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.data.row
+import io.kotest.datatest.withData
 import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
@@ -9,8 +11,9 @@ import io.mockk.mockk
 import utils.TestUtils
 import java.io.File
 
+// TODO switch back to StringSpec with kotest 6.0.4
 class ExtensionBuilderTest :
-    StringSpec({
+    FreeSpec({
 
         val tempDir = tempdir()
         val gradleProjectGenerator = GradleProjectGenerator()
@@ -102,20 +105,31 @@ class ExtensionBuilderTest :
             result shouldBe false
         }
 
-        "build should fail when libs.versions.toml is missing" {
-            generateRequiredFiles(libsVersionFilePresent = false, sourceFilePresent = true, gradleWrapperPresent = true)
-            val result = extensionBuilder.build()
-            result shouldBe false
-        }
-
-        "build should fail when source file is missing" {
-            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = false, gradleWrapperPresent = true)
-            val result = extensionBuilder.build()
-            result shouldBe false
-        }
-
-        "build should fail when gradle wrapper is missing" {
-            generateRequiredFiles(libsVersionFilePresent = true, sourceFilePresent = true, gradleWrapperPresent = false)
+        withData(
+            nameFn = { "build should fail when ${it.b} is missing" },
+            row({
+                generateRequiredFiles(
+                    libsVersionFilePresent = false,
+                    sourceFilePresent = true,
+                    gradleWrapperPresent = true,
+                )
+            }, "libs.versions.toml"),
+            row({
+                generateRequiredFiles(
+                    libsVersionFilePresent = true,
+                    sourceFilePresent = false,
+                    gradleWrapperPresent = true,
+                )
+            }, "source file"),
+            row({
+                generateRequiredFiles(
+                    libsVersionFilePresent = true,
+                    sourceFilePresent = true,
+                    gradleWrapperPresent = false,
+                )
+            }, "gradle wrapper"),
+        ) { (generateRequiredFilesPreConfigured, _) ->
+            generateRequiredFilesPreConfigured()
             val result = extensionBuilder.build()
             result shouldBe false
         }
