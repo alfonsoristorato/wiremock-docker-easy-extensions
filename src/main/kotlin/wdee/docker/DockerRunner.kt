@@ -25,7 +25,14 @@ class DockerRunner(
                 .resolve(ContextHolder.OutputConfig.DIR)
                 .absolutePath
 
-        val command =
+        val stopCommand =
+            listOf(
+                "docker",
+                "stop",
+                ContextHolder.JarRunConfig.dockerContainerName,
+            )
+
+        val startCommand =
             listOf(
                 "docker",
                 "run",
@@ -52,11 +59,7 @@ class DockerRunner(
                 runCatching {
                     processBuilder
                         .command(
-                            listOf(
-                                "docker",
-                                "stop",
-                                ContextHolder.JarRunConfig.dockerContainerName,
-                            ),
+                            stopCommand,
                         ).start()
                         .waitFor()
                 }.onFailure {
@@ -71,7 +74,12 @@ class DockerRunner(
 
         runCatching {
             processBuilder
-                .command(command)
+                .command(stopCommand)
+                .start()
+                .waitFor()
+
+            processBuilder
+                .command(startCommand)
                 .directory(ContextHolder.projectRoot)
                 .inheritIO()
                 .start()
