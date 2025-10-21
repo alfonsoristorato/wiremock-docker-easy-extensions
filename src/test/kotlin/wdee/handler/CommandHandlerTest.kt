@@ -1,7 +1,7 @@
 package wdee.handler
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.row
 import io.kotest.datatest.withData
 import io.kotest.extensions.system.captureStandardOut
@@ -19,9 +19,8 @@ import wdee.builder.ExtensionBuilder
 import wdee.config.ConfigReader
 import wdee.docker.DockerRunner
 
-// TODO switch back to StringSpec with kotest 6.0.4
 class CommandHandlerTest :
-    FreeSpec({
+    StringSpec({
         val configReader = mockk<ConfigReader>()
         val extensionBuilder = mockk<ExtensionBuilder>()
         val dockerRunner = mockk<DockerRunner>()

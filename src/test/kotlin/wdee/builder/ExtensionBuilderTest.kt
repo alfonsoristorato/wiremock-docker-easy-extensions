@@ -1,6 +1,6 @@
 package wdee.builder
 
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.row
 import io.kotest.datatest.withData
 import io.kotest.engine.spec.tempdir
@@ -11,9 +11,8 @@ import io.mockk.mockk
 import utils.TestUtils
 import java.io.File
 
-// TODO switch back to StringSpec with kotest 6.0.4
 class ExtensionBuilderTest :
-    FreeSpec({
+    StringSpec({
 
         val tempDir = tempdir()
         val gradleProjectGenerator = GradleProjectGenerator()
