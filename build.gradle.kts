@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.gradle.ktlint)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotest)
 }
 
 group = "alfonsoristorato"
@@ -35,10 +36,6 @@ tasks.build {
 
 tasks.jar {
     enabled = false
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 kotlin {
