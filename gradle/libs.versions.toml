@@ -11,7 +11,7 @@ mockk                           = "1.14.6"
 shadow-jar                      = "9.2.2"
 testcontainers                  = "2.0.1"
 # Gradle generator
-wiremock                        = "3.13.1"
+wiremock                        = "3.13.2"
 
 [libraries]
 #Main project
