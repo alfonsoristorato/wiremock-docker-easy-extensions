@@ -49,7 +49,7 @@ class E2eJarBuild :
             val extensionJar = locateBuiltExtensionJar()
 
             wiremockContainer =
-                GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.1"))
+                GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.2"))
                     .withExposedPorts(8080)
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockMappingsDir.absolutePath), "/home/wiremock/mappings")
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")

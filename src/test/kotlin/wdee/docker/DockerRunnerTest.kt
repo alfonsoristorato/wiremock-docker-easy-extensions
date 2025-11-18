@@ -73,7 +73,7 @@ class DockerRunnerTest :
                     ).absolutePath}:/home/wiremock/__files",
                     "-v",
                     "${ContextHolder.projectRoot.resolve(ContextHolder.OutputConfig.DIR).absolutePath}:/var/wiremock/extensions/",
-                    "wiremock/wiremock:3.13.1",
+                    "wiremock/wiremock:3.13.2",
                 ) + wiremockClOptions
             val output =
                 captureStandardOut {
