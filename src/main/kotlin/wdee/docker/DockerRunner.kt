@@ -47,7 +47,7 @@ class DockerRunner(
                 "$dockerFilesPath:/home/wiremock/__files",
                 "-v",
                 "$extensionsJarPath:/var/wiremock/extensions/",
-                "wiremock/wiremock:3.13.1",
+                "wiremock/wiremock:3.13.2",
             ) + ContextHolder.JarRunConfig.wiremockClOptions
 
         runTime.addShutdownHook(
