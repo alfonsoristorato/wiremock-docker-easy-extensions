@@ -7,7 +7,7 @@ kotest                          = "6.0.7"
 kotlin                          = "2.2.21"
 kotlinx-serialization-json      = "1.9.0"
 kover                           = "0.9.3"
-mockk                           = "1.14.6"
+mockk                           = "1.14.7"
 shadow-jar                      = "9.2.2"
 testcontainers                  = "2.0.2"
 # Gradle generator
