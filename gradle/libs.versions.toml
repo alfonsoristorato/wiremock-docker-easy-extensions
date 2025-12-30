@@ -8,7 +8,7 @@ kotlin                          = "2.3.0"
 kotlinx-serialization-json      = "1.9.0"
 kover                           = "0.9.4"
 mockk                           = "1.14.7"
-shadow-jar                      = "9.2.2"
+shadow-jar                      = "9.3.0"
 testcontainers                  = "2.0.3"
 # Gradle generator
 wiremock                        = "3.13.2"
