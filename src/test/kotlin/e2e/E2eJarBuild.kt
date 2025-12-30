@@ -50,7 +50,7 @@ class E2eJarBuild :
 
             wiremockContainer =
                 GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.2"))
-                    .withExposedPorts(8080)
+                    .withExposedPorts(port)
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockMappingsDir.absolutePath), "/home/wiremock/mappings")
                     .withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
                     .withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")

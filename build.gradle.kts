@@ -37,6 +37,11 @@ tasks.jar {
     enabled = false
 }
 
+tasks.register("buildDockerImageForE2ETests", Exec::class) {
+    dependsOn(tasks.shadowJar)
+    commandLine("docker", "build", "-t", "docker-image-e2e", ".")
+}
+
 tasks.test {
     useJUnitPlatform()
 }

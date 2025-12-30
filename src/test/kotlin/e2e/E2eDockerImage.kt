@@ -5,19 +5,17 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.OutputFrame
-import org.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.utility.MountableFile
 import utils.HttpUtils
 import utils.TestUtils
-import java.io.File
-import kotlin.time.Duration.Companion.minutes
+import java.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class E2eDockerImage :
     FunSpec({
-        val projectDir = File(".").canonicalFile
-        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
         val port = 8080
-        val eventuallyWait = 3.minutes
+        val eventuallyWait = 30.seconds
+        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
         lateinit var wiremockContainer: GenericContainer<*>
 
         val hostResolver = { "http://${wiremockContainer.host}:${wiremockContainer.getMappedPort(port)}" }
@@ -25,14 +23,14 @@ class E2eDockerImage :
         fun wiremockRunning() = HttpUtils.get("${hostResolver()}/__admin/health")
 
         beforeSpec {
-            val dockerImage =
-                ImageFromDockerfile()
-                    .withFileFromFile(".", projectDir)
+            // this image is built via a gradle-task for ease of use
+            val imageId = "docker-image-e2e"
 
             wiremockContainer =
-                GenericContainer(dockerImage)
+                GenericContainer(imageId)
                     .withExposedPorts(port)
-                    .withCopyFileToContainer(MountableFile.forHostPath(e2eFilesDir.absolutePath), "/home/config/e2e-resources")
+                    .withStartupTimeout(Duration.ofMinutes(3))
+                    .withCopyFileToContainer(MountableFile.forHostPath(e2eFilesDir.absolutePath), "/home/config/examples")
                     .withLogConsumer { frame: OutputFrame ->
                         val txt = frame.utf8String?.trimEnd().orEmpty()
                         if (txt.isNotEmpty()) {
