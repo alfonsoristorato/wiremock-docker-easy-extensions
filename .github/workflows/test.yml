@@ -27,7 +27,7 @@ jobs:
 
       # slightly redundant as the gradlew build will re-call shadowJar
       - name: Create dockerImage for e2e tests
-        run: ./gradlew wiremockDockerImage
+        run: ./gradlew buildDockerImageForE2ETests
 
       - name: Build and Test with Gradle
         run: ./gradlew build
