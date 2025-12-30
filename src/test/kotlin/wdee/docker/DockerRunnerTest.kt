@@ -1,7 +1,7 @@
 package wdee.docker
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.datatest.withData
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -19,9 +19,8 @@ import utils.TestUtils.DEFAULT_DOCKER_CONTAINER_NAME
 import utils.TestUtils.DEFAULT_DOCKER_PORT
 import wdee.config.ContextHolder
 
-// TODO switch back to StringSpec with kotest 6.0.4
 class DockerRunnerTest :
-    FreeSpec({
+    StringSpec({
         val processBuilder = mockk<ProcessBuilder>()
 
         val process = mockk<Process>()
@@ -53,7 +52,9 @@ class DockerRunnerTest :
         ) { wiremockClOptions ->
             TestUtils.mockContextHolder(wiremockClOptions = wiremockClOptions)
 
-            val expectedCommand =
+            val expectedStopCommand = listOf("docker", "stop", DEFAULT_DOCKER_CONTAINER_NAME)
+
+            val expectedStartCommand =
                 listOf(
                     "docker",
                     "run",
@@ -72,7 +73,7 @@ class DockerRunnerTest :
                     ).absolutePath}:/home/wiremock/__files",
                     "-v",
                     "${ContextHolder.projectRoot.resolve(ContextHolder.OutputConfig.DIR).absolutePath}:/var/wiremock/extensions/",
-                    "wiremock/wiremock:3.13.1",
+                    "wiremock/wiremock:3.13.2",
                 ) + wiremockClOptions
             val output =
                 captureStandardOut {
@@ -84,8 +85,12 @@ class DockerRunnerTest :
                 // add shutdown hook sequence
                 runtime.addShutdownHook(any())
 
+                // stop sequence (from previous runs)
+                processBuilder.command(expectedStopCommand)
+                processBuilder.start()
+                process.waitFor()
                 // start sequence
-                processBuilder.command(expectedCommand)
+                processBuilder.command(expectedStartCommand)
                 // This should be the `ContextHolder.projectRoot` instead of `any()`, but because ContextHolder is mocked,
                 // mockk throws `No other calls allowed in stdObjectAnswer than equals/hashCode/toString`
                 // when doing equality check on `File` object.
@@ -97,6 +102,41 @@ class DockerRunnerTest :
         }
 
         "runWiremockContainer should handle exceptions thrown during container start gracefully" {
+            TestUtils.mockContextHolder()
+
+            every { processBuilder.start() } returns process andThenThrows RuntimeException("An Exception during start")
+
+            val output =
+                captureStandardOut {
+                    shouldThrowAny {
+                        dockerRunner.runWiremockContainer()
+                    }.apply {
+                        message shouldBe "Failed to start WireMock container"
+                        cause shouldBe RuntimeException("An Exception during start")
+                    }
+                }
+            output shouldContain "Starting WireMock container '$DEFAULT_DOCKER_CONTAINER_NAME'..."
+            output shouldContain "Failed to start WireMock container: An Exception during start"
+
+            verifySequence {
+                // add shutdown hook sequence
+                runtime.addShutdownHook(any())
+
+                // stop sequence (from previous runs)
+                processBuilder.command(any<List<String>>())
+                processBuilder.start()
+                process.waitFor()
+
+                // start sequence
+                processBuilder.command(any<List<String>>())
+                processBuilder.directory(any())
+                processBuilder.inheritIO()
+                processBuilder.start()
+            }
+        }
+
+        """runWiremockContainer should handle exceptions thrown during previous container 
+            stop gracefully and not attempt to start new container""" {
             TestUtils.mockContextHolder()
 
             every { processBuilder.start() } throws RuntimeException("An Exception during start")
@@ -117,11 +157,11 @@ class DockerRunnerTest :
                 // add shutdown hook sequence
                 runtime.addShutdownHook(any())
 
-                // start sequence
+                // stop sequence (from previous runs)
                 processBuilder.command(any<List<String>>())
-                processBuilder.directory(any())
-                processBuilder.inheritIO()
                 processBuilder.start()
+
+                // start sequence not attempted
             }
         }
 
@@ -143,6 +183,10 @@ class DockerRunnerTest :
                 // add shutdown hook sequence
                 runtime.addShutdownHook(any())
 
+                // stop sequence (from previous runs)
+                processBuilder.command(any<List<String>>())
+                processBuilder.start()
+                process.waitFor()
                 // start sequence
                 processBuilder.command(any<List<String>>())
                 processBuilder.directory(any())
@@ -163,7 +207,7 @@ class DockerRunnerTest :
             val hookSlot = slot<Thread>()
             every { runtime.addShutdownHook(capture(hookSlot)) } just runs
 
-            every { processBuilder.start() } returns process andThenThrows RuntimeException("An Exception during stop")
+            every { processBuilder.start() } returns process andThen process andThenThrows RuntimeException("An Exception during stop")
 
             captureStandardOut {
                 dockerRunner.runWiremockContainer()
@@ -182,6 +226,10 @@ class DockerRunnerTest :
                 // add shutdown hook sequence
                 runtime.addShutdownHook(any())
 
+                // stop sequence (from previous runs)
+                processBuilder.command(any<List<String>>())
+                processBuilder.start()
+                process.waitFor()
                 // start sequence
                 processBuilder.command(any<List<String>>())
                 processBuilder.directory(any())

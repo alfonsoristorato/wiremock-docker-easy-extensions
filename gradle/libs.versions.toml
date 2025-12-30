@@ -1,17 +1,17 @@
 # Keep alphabetical and formatted correctly please
 [versions]
 #Main project
-gradle-ktlint                   = "13.1.0"
-kaml                            = "0.96.0"
-kotest                          = "6.0.3"
-kotlin                          = "2.2.20"
+gradle-ktlint                   = "14.0.1"
+kaml                            = "0.104.0"
+kotest                          = "6.0.7"
+kotlin                          = "2.3.0"
 kotlinx-serialization-json      = "1.9.0"
-kover                           = "0.9.2"
-mockk                           = "1.14.5"
-shadow-jar                      = "9.1.0"
-testcontainers                  = "1.21.3"
+kover                           = "0.9.4"
+mockk                           = "1.14.7"
+shadow-jar                      = "9.3.0"
+testcontainers                  = "2.0.3"
 # Gradle generator
-wiremock                        = "3.13.1"
+wiremock                        = "3.13.2"
 
 [libraries]
 #Main project
