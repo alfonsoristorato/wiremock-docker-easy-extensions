@@ -5,59 +5,36 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.OutputFrame
-import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import utils.HttpUtils
 import utils.TestUtils
-import java.io.File
+import java.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class E2eJarBuild :
+class E2eDockerImage :
     FunSpec({
-
-        val projectDir = File(".").canonicalFile
-        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
-        val configFile = File(e2eFilesDir, "wdee-config.yaml")
-        val wiremockMappingsDir = File(e2eFilesDir, "mappings")
-        val wiremockFilesDir = File(e2eFilesDir, "__files")
-        val wdeeBuiltJar = File(projectDir, "build/libs/wiremock-docker-easy-extensions.jar")
         val port = 8080
-        val processBuilder = ProcessBuilder()
         val eventuallyWait = 30.seconds
-        lateinit var wdeeProcess: Process
+        val e2eFilesDir = TestUtils.getConfigFileFromResources("e2e-resources")
         lateinit var wiremockContainer: GenericContainer<*>
-
-        fun locateBuiltExtensionJar(): File = File(projectDir, "build/extensions/wiremock-extensions-bundled.jar")
 
         val hostResolver = { "http://${wiremockContainer.host}:${wiremockContainer.getMappedPort(port)}" }
 
         fun wiremockRunning() = HttpUtils.get("${hostResolver()}/__admin/health")
 
         beforeSpec {
-            wdeeProcess =
-                TestUtils.wdeeCommandHandlerAndLogger(
-                    processBuilder = processBuilder,
-                    wdeeBuiltJarPath = wdeeBuiltJar.absolutePath,
-                    command = "build",
-                    wdeeConfigFilePath = configFile.absolutePath,
-                    projectDir = projectDir,
-                )
-            eventually(eventuallyWait) {
-                wdeeProcess.waitFor() == 0
-            }
-
-            val extensionJar = locateBuiltExtensionJar()
+            // this image is built via a gradle-task for ease of use
+            val imageId = "docker-image-e2e"
 
             wiremockContainer =
-                GenericContainer(DockerImageName.parse("wiremock/wiremock:3.13.2"))
+                GenericContainer(imageId)
                     .withExposedPorts(port)
-                    .withCopyFileToContainer(MountableFile.forHostPath(wiremockMappingsDir.absolutePath), "/home/wiremock/mappings")
-                    .withCopyFileToContainer(MountableFile.forHostPath(wiremockFilesDir.absolutePath), "/home/wiremock/__files")
-                    .withCopyFileToContainer(MountableFile.forHostPath(extensionJar.absolutePath), "/var/wiremock/extensions/")
+                    .withStartupTimeout(Duration.ofMinutes(3))
+                    .withCopyFileToContainer(MountableFile.forHostPath(e2eFilesDir.absolutePath), "/home/config/examples")
                     .withLogConsumer { frame: OutputFrame ->
                         val txt = frame.utf8String?.trimEnd().orEmpty()
                         if (txt.isNotEmpty()) {
-                            println("[wiremockContainer] $txt")
+                            println("[wiremockDockerImage] $txt")
                         }
                     }
             wiremockContainer.start()
@@ -68,10 +45,7 @@ class E2eJarBuild :
         }
 
         afterSpec {
-            runCatching {
-                wiremockContainer.stop()
-                runCatching { wdeeProcess.destroy() }
-            }
+            runCatching { wiremockContainer.stop() }
         }
 
         fun endpoint(path: String) = "${hostResolver()}$path"

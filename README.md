@@ -233,7 +233,7 @@ This section is for those who wish to build the `wiremock-docker-easy-extensions
 The first step is to build the executable JAR for the builder tool.
 
 ```sh
-./gradlew build
+./gradlew build -x test
 ```
 
 This will create the JAR at `build/libs/wiremock-docker-easy-extensions.jar`.
@@ -256,6 +256,21 @@ To build the JAR and immediately run it with WireMock in a Docker container:
 
 ```sh
 java -jar build/libs/wiremock-docker-easy-extensions.jar run <path-to-your-config>.yaml
+```
+
+### Running the tests
+
+Because some e2e tests require a docker image to exist, there is a Gradle task that builds the image, make sure you run
+this at least once (or more if you are doing major changes and want them tested before CI).
+
+```sh
+./gradlew buildDockerImageForE2ETests
+```
+
+Then, to run all tests:
+
+```sh
+./gradlew test
 ```
 
 ---

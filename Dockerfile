@@ -1,9 +1,7 @@
 FROM eclipse-temurin:21-jdk-jammy AS wiremock-docker-easy-extensions_builder
 WORKDIR /builder
 
-RUN apt-get update && \
-    apt-get install -y git && \
-    git clone https://github.com/alfonsoristorato/wiremock-docker-easy-extensions.git .
+COPY . .
 
 RUN ./gradlew shadowJar --no-daemon
 
