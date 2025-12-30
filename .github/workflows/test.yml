@@ -25,5 +25,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      # slightly redundant as the gradlew build will re-call shadowJar
+      - name: Create dockerImage for e2e tests
+        run: ./gradlew wiremockDockerImage
+
       - name: Build and Test with Gradle
         run: ./gradlew build
