@@ -3,7 +3,7 @@
 #Main project
 gradle-ktlint                   = "14.0.1"
 kaml                            = "0.104.0"
-kotest                          = "6.0.7"
+kotest                          = "6.1.0"
 kotlin                          = "2.3.0"
 kotlinx-serialization-json      = "1.9.0"
 kover                           = "0.9.4"
