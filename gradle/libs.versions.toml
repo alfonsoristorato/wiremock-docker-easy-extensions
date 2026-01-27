@@ -31,6 +31,7 @@ kotest                          = ["kotest-assertions-core" , "kotest-assertions
 
 [plugins]
 gradle-ktlint                   = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "gradle-ktlint" }
+kotest-gradle-plugin            = { id = "io.kotest", version.ref = "kotest" }
 kotlin-jvm                      = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-plugin-serialization     = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover                           = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
