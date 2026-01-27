@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.shadow.jar)
     alias(libs.plugins.gradle.ktlint)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotest.gradle.plugin)
 }
 
 group = "alfonsoristorato"
@@ -44,6 +45,8 @@ tasks.register("buildDockerImageForE2ETests", Exec::class) {
 
 tasks.test {
     useJUnitPlatform()
+    // TODO: remove once kotest gradle plugin exposes this disabler as a config
+    outputs.upToDateWhen { false }
 }
 
 kotlin {
