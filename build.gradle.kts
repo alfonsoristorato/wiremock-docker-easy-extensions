@@ -48,7 +48,7 @@ tasks.test {
 }
 
 kotest {
-    alwaysRerunTests = true
+    alwaysRerunTests.set(true)
 }
 
 kotlin {
