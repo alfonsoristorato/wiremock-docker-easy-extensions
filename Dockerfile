@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.9_10-jdk-jammy AS wiremock-docker-easy-extensions_builder
+FROM eclipse-temurin:21.0.10_7-jdk-jammy AS wiremock-docker-easy-extensions_builder
 WORKDIR /builder
 
 COPY . .
